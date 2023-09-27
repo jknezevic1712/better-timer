@@ -29,7 +29,7 @@ function authReducer(state: InitialState, action: Action) {
     case "SWITCH_AUTH_FORM":
       return { ...initialState, isSignUpForm: !state.isSignUpForm };
     case "AUTHENTICATE":
-      return { ...initialState };
+      return { ...initialState, isSignUpForm: state.isSignUpForm };
     default:
       return state;
   }
@@ -104,7 +104,7 @@ export default function AuthForm() {
                 : "Need an account?"}
             </span>
             <button
-              className="font-medium text-amber-500 underline"
+              className="font-medium text-primary underline"
               onClick={() =>
                 dispatch({
                   type: "SWITCH_AUTH_FORM",

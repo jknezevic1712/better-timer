@@ -1,46 +1,60 @@
+import { useRouter } from "next/navigation";
 import {
   createUserWithEmailAndPassword,
-  getAuth,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { app, auth, db } from "@/server/api/firebase/firebase-config";
+import { auth, db } from "@/server/api/firebase/firebase-config";
+import useStore from "@/app/_store/store";
+import useToast from "@/app/_hooks/toast/Toast";
+// types
+import type { FirebaseError } from "firebase/app";
 
 export default function useFirebaseAuth() {
+  const toast = useToast();
+  const router = useRouter();
+  const updateUser = useStore((state) => state.updateUser);
+
   function signUpWithEmailAndPassword(email: string, password: string) {
     console.log("signUpWithEmailAndPassword RENDEEEER!");
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log("Sign Up successful! ", userCredential.user);
-        // TODO: Dispatch an action to the store
+        updateUser(userCredential.user);
         // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
-        // TODO: Show toast
+        toast("successfully signed up!", "success");
+
+        router.push("/trackers");
       })
       .catch((err) => {
-        console.log("Error creating the user ", err);
-        // TODO: Show toast
+        toast(`unsuccessful sign up, reason: ${err.code}`, "error");
       });
   }
 
   function signInUser(email: string, password: string) {
     console.log("signInUser RENDEEEER!");
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log("Sign In successful! ", userCredential.user);
-        // TODO: Dispatch an action to the store
+        updateUser(userCredential.user);
         // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
-        // TODO: Show toast
+        toast("successfully signed in!", "success");
+
+        router.push("/trackers");
       })
-      .catch((err) => {
-        console.log("Error creating the user ", err);
-        // TODO: Show toast
+      .catch((err: FirebaseError) => {
+        toast(`unsuccessful sign in, reason: ${err.code}`, "error");
       });
   }
 
   function signOutUser() {
     console.log("signOutUser RENDEEEER!");
+
     signOut(auth);
-    // TODO: Dispatch an action to the store
+    updateUser(null);
+    toast("successfully signed out!", "success");
+
+    router.push("/auth");
   }
 
   // async function saveNewUserToDB() {

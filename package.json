@@ -18,7 +18,9 @@
     "primereact": "^9.6.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "zod": "^3.22.2"
+    "react-hot-toast": "^2.4.1",
+    "zod": "^3.22.2",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@types/eslint": "^8.44.3",
