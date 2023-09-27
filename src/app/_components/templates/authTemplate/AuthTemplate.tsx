@@ -1,56 +1,21 @@
-"use client";
-
-import { useReducer } from "react";
-import useFirebaseAuth from "@/app/_hooks/firebase/auth";
 // components
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+// types
+import type { AuthDispatchAction } from "@/app/(routes)/auth/page";
+import type { Dispatch } from "react";
 
-type Action =
-  | { type: "CHANGE_EMAIL" | "CHANGE_PASSWORD"; payload: string }
-  | { type: "SWITCH_AUTH_FORM"; payload: null }
-  | { type: "AUTHENTICATE"; payload: null };
-
-const initialState = {
-  isSignUpForm: false,
-  email: "",
-  password: "",
+type AuthTemplateProps = {
+  authState: {
+    isSignUpForm: boolean;
+    email: string;
+    password: string;
+  };
+  dispatch: Dispatch<AuthDispatchAction>;
+  handleSubmit: () => void;
 };
-type InitialState = typeof initialState;
-
-function authReducer(state: InitialState, action: Action) {
-  const { type, payload } = action;
-
-  switch (type) {
-    case "CHANGE_EMAIL":
-      return { ...state, email: payload };
-    case "CHANGE_PASSWORD":
-      return { ...state, password: payload };
-    case "SWITCH_AUTH_FORM":
-      return { ...initialState, isSignUpForm: !state.isSignUpForm };
-    case "AUTHENTICATE":
-      return { ...initialState, isSignUpForm: state.isSignUpForm };
-    default:
-      return state;
-  }
-}
-
-export default function AuthForm() {
-  const { signUpWithEmailAndPassword, signInUser } = useFirebaseAuth();
-  const [authState, dispatch] = useReducer(authReducer, initialState);
-
-  function handleSubmit() {
-    dispatch({
-      type: "AUTHENTICATE",
-      payload: null,
-    });
-
-    if (authState.isSignUpForm) {
-      return signUpWithEmailAndPassword(authState.email, authState.password);
-    }
-
-    return signInUser(authState.email, authState.password);
-  }
+export default function AuthTemplate(props: AuthTemplateProps) {
+  const { authState, dispatch, handleSubmit } = props;
 
   return (
     <div className="flex w-full max-w-3xl justify-center">
