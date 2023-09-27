@@ -24,7 +24,7 @@ export default function useFirebaseAuth() {
     console.log("signInUser RENDEEEER!");
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log("Sign Up successful! ", userCredential.user);
+        console.log("Sign In successful! ", userCredential.user);
         // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
         // TODO: Show toast
       })
