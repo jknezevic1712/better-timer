@@ -1,22 +1,16 @@
-import { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  type User,
+  signOut,
 } from "firebase/auth";
-import { signOut } from "@/server/api/firebase/firebase-auth";
-import { auth } from "@/server/api/firebase/firebase-config";
+import { auth, db } from "@/server/api/firebase/firebase-config";
 
 export default function useFirebaseAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const { currentUser } = auth;
-
   function signUpWithEmailAndPassword(email: string, password: string) {
     console.log("signUpWithEmailAndPassword RENDEEEER!");
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("Sign Up successful! ", userCredential.user);
-        setUser(userCredential.user);
         // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
         // TODO: Show toast
       })
@@ -31,7 +25,6 @@ export default function useFirebaseAuth() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("Sign Up successful! ", userCredential.user);
-        setUser(userCredential.user);
         // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
         // TODO: Show toast
       })
@@ -43,8 +36,20 @@ export default function useFirebaseAuth() {
 
   function signOutUser() {
     console.log("signOutUser RENDEEEER!");
-    signOut();
+    signOut(auth);
   }
 
-  return { currentUser, signInUser, signUpWithEmailAndPassword, signOutUser };
+  // async function saveNewUserToDB() {
+  //   const citiesCol = collection(db, 'cities');
+  //   const citySnapshot = await getDocs(citiesCol);
+  //   const cityList = citySnapshot.docs.map(doc => doc.data());
+  //   return cityList;
+  // }
+
+  return {
+    auth,
+    signInUser,
+    signUpWithEmailAndPassword,
+    signOutUser,
+  };
 }

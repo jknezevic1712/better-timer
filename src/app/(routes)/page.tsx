@@ -1,5 +1,5 @@
 // components
-import AuthForm from "../_components/organisms/authForm/AuthForm";
+import Auth from "../_components/organisms/auth/Auth";
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
         <h1 className="text-5xl font-extrabold tracking-tight text-lime-600 sm:text-[5rem]">
           Sign up
         </h1>
-        <AuthForm />
+        <Auth />
       </div>
     </div>
   );
