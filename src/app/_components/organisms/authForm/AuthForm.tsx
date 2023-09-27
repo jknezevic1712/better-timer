@@ -36,7 +36,7 @@ function authReducer(state: InitialState, action: Action) {
 }
 
 export default function AuthForm() {
-  const { auth, signUpWithEmailAndPassword, signInUser } = useFirebaseAuth();
+  const { signUpWithEmailAndPassword, signInUser } = useFirebaseAuth();
   const [authState, dispatch] = useReducer(authReducer, initialState);
 
   function handleSubmit() {

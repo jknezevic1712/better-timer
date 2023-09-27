@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 import PrimeReactProvider from "../_components/organisms/primeReactProvider/PrimeReactProvider";
 
 // Components
-// import Header from '../_components/organisms/header/Header';
+import Header from "../_components/organisms/header/Header";
 // import Footer from '../_components/organisms/footer/Footer';
 
 export const metadata: Metadata = {
@@ -24,14 +24,14 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen items-center justify-center">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <PrimeReactProvider>
-            {/* <Header /> */}
+      <body className="flex min-h-screen flex-col items-center">
+        <PrimeReactProvider>
+          <Header />
+          <div className="container flex h-full flex-col items-center justify-center gap-12 px-4 py-16">
             {children}
             {/* <Footer /> */}
-          </PrimeReactProvider>
-        </div>
+          </div>
+        </PrimeReactProvider>
       </body>
     </html>
   );

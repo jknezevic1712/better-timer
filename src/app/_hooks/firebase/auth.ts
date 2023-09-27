@@ -1,9 +1,10 @@
 import {
   createUserWithEmailAndPassword,
+  getAuth,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { auth, db } from "@/server/api/firebase/firebase-config";
+import { app, auth, db } from "@/server/api/firebase/firebase-config";
 
 export default function useFirebaseAuth() {
   function signUpWithEmailAndPassword(email: string, password: string) {
@@ -11,6 +12,7 @@ export default function useFirebaseAuth() {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("Sign Up successful! ", userCredential.user);
+        // TODO: Dispatch an action to the store
         // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
         // TODO: Show toast
       })
@@ -25,6 +27,7 @@ export default function useFirebaseAuth() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("Sign In successful! ", userCredential.user);
+        // TODO: Dispatch an action to the store
         // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
         // TODO: Show toast
       })
@@ -37,6 +40,7 @@ export default function useFirebaseAuth() {
   function signOutUser() {
     console.log("signOutUser RENDEEEER!");
     signOut(auth);
+    // TODO: Dispatch an action to the store
   }
 
   // async function saveNewUserToDB() {
@@ -47,7 +51,6 @@ export default function useFirebaseAuth() {
   // }
 
   return {
-    auth,
     signInUser,
     signUpWithEmailAndPassword,
     signOutUser,
