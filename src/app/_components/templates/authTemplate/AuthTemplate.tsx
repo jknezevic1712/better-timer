@@ -18,9 +18,9 @@ export default function AuthTemplate(props: AuthTemplateProps) {
   const { authState, dispatch, handleSubmit } = props;
 
   return (
-    <div className="flex w-full max-w-3xl justify-center">
+    <div className="flex w-full max-w-lg justify-center lg:max-w-3xl">
       <div className="align-items-center justify-content-center flex w-full flex-col gap-4">
-        <div className="shadow-2 border-round w-full bg-zinc-100 p-4 lg:w-6">
+        <div className="shadow-2 border-round w-full bg-zinc-200 p-4 lg:w-6">
           <div className="mb-5 text-center">
             <h1 className="text-900 mb-3 text-3xl font-medium">
               {authState.isSignUpForm ? "Register" : "Login"}
@@ -58,7 +58,7 @@ export default function AuthTemplate(props: AuthTemplateProps) {
           </div>
         </div>
 
-        <div className="shadow-2 border-round flex w-full items-center justify-center gap-6 bg-zinc-100 lg:w-6">
+        <div className="shadow-2 border-round flex w-full items-center justify-center gap-6 bg-zinc-200 lg:w-6">
           <div className="relative h-full w-1/4">
             <span className="pi pi-user-plus absolute bottom-0 right-0 text-6xl"></span>
           </div>

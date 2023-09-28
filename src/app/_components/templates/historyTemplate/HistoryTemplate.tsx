@@ -4,12 +4,12 @@ import { InputText } from "primereact/inputtext";
 
 export default function HistoryTemplate() {
   return (
-    <div className="flex w-full flex-col items-center gap-6">
+    <div className="flex w-full max-w-lg flex-col items-center gap-6 lg:max-w-3xl">
       <h1 className="w-full text-left text-2xl font-semibold">
         Trackers History
       </h1>
 
-      <div className="shadow-2 border-round flex w-full flex-col items-center gap-4 bg-zinc-100 p-4 lg:w-6">
+      <div className="shadow-2 border-round flex w-full flex-col items-center gap-4 bg-zinc-200 p-4 lg:w-6">
         <div className="w-full">
           <Calendar
             showIcon
