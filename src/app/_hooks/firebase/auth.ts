@@ -3,10 +3,13 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  type User,
 } from "firebase/auth";
-import { auth, db } from "@/server/api/firebase/firebase-config";
+import { auth } from "@/server/api/firebase/firebase-config";
+// hooks
 import useStore from "@/app/_store/store";
 import useToast from "@/app/_hooks/toast/Toast";
+import useFirebaseActions from "./actions";
 // types
 import type { FirebaseError } from "firebase/app";
 
@@ -14,6 +17,7 @@ export default function useFirebaseAuth() {
   const toast = useToast();
   const router = useRouter();
   const updateUser = useStore((state) => state.updateUser);
+  const { addUserToDB } = useFirebaseActions();
 
   function signUpWithEmailAndPassword(email: string, password: string) {
     console.log("signUpWithEmailAndPassword RENDEEEER!");
@@ -21,6 +25,7 @@ export default function useFirebaseAuth() {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         updateUser(userCredential.user);
+        addUserToDB(userCredential.user);
         // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
         toast("successfully signed up!", "success");
 
@@ -37,7 +42,6 @@ export default function useFirebaseAuth() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         updateUser(userCredential.user);
-        // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
         toast("successfully signed in!", "success");
 
         router.push("/trackers");
