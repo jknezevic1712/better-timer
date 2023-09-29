@@ -4,6 +4,16 @@ export function getNewDate(format?: "medium" | "full" | "long" | "short") {
   });
 }
 
-export function formatDateToTimestamp(date: string) {
-  return new Date(date).toTimeString().substring(0, 8);
+export function formatDateToTimestamp(miliSecs: number) {
+  const ms = miliSecs % 1000;
+  miliSecs = (miliSecs - ms) / 1000;
+
+  const secs = miliSecs % 60;
+  miliSecs = (miliSecs - secs) / 60;
+
+  const mins = miliSecs % 60;
+  const hrs = (miliSecs - mins) / 60;
+
+  const result = hrs + ":" + mins + ":" + secs;
+  return result;
 }

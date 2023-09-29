@@ -26,7 +26,7 @@ export default function TrackersTemplate() {
             startTime: res[1].startTime,
             endTime: res[1].endTime,
             loggedTime: formatDateToTimestamp(
-              (+res[1].startTime - +res[1].endTime).toString(),
+              +res[1].endTime - +res[1].startTime,
             ),
             stopped: res[1].stopped,
           }),
