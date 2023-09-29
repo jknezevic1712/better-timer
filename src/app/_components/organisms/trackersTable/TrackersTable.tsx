@@ -2,7 +2,7 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 // types
-import { Tracker } from "@/app/_types/tracker";
+import type { Tracker } from "@/app/_types/tracker";
 
 function TrackersTableActions() {
   return (
