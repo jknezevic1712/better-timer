@@ -3,7 +3,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  type User,
 } from "firebase/auth";
 import { auth } from "@/server/api/firebase/firebase-config";
 // hooks
@@ -16,17 +15,14 @@ import type { FirebaseError } from "firebase/app";
 export default function useFirebaseAuth() {
   const toast = useToast();
   const router = useRouter();
-  const updateUser = useStore((state) => state.updateUser);
+  const setUser = useStore((state) => state.setUser);
   const { addUserToDB } = useFirebaseActions();
 
   function signUpWithEmailAndPassword(email: string, password: string) {
-    console.log("signUpWithEmailAndPassword RENDEEEER!");
-
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        updateUser(userCredential.user);
+        setUser(userCredential.user);
         addUserToDB(userCredential.user);
-        // TODO: Add user with his uid as key and required properties to the firestore (such as empty tasks array)
         toast("successfully signed up!", "success");
 
         router.push("/trackers");
@@ -37,11 +33,9 @@ export default function useFirebaseAuth() {
   }
 
   function signInUser(email: string, password: string) {
-    console.log("signInUser RENDEEEER!");
-
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        updateUser(userCredential.user);
+        setUser(userCredential.user);
         toast("successfully signed in!", "success");
 
         router.push("/trackers");
@@ -52,21 +46,12 @@ export default function useFirebaseAuth() {
   }
 
   function signOutUser() {
-    console.log("signOutUser RENDEEEER!");
-
     signOut(auth);
-    updateUser(null);
+    setUser(null);
     toast("successfully signed out!", "success");
 
     router.push("/auth");
   }
-
-  // async function saveNewUserToDB() {
-  //   const citiesCol = collection(db, 'cities');
-  //   const citySnapshot = await getDocs(citiesCol);
-  //   const cityList = citySnapshot.docs.map(doc => doc.data());
-  //   return cityList;
-  // }
 
   return {
     signInUser,

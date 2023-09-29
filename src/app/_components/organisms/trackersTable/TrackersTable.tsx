@@ -1,96 +1,36 @@
+import { useEffect, useState } from "react";
+import useStore from "@/app/_store/store";
 // components
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
+import { ProgressSpinner } from "primereact/progressspinner";
+import TrackersTableActions from "../../molecules/trackersTableActions/TrackersTableActions";
 // types
-import type { Tracker } from "@/app/_types/tracker";
-
-function TrackersTableActions() {
-  return (
-    <div className="flex w-full items-center justify-start gap-3">
-      <i className="pi pi-play cursor-pointer text-primary lg:transition-opacity lg:hover:opacity-70"></i>
-      {/* pi-play pi-pause */}
-      <i className="pi pi-stop-circle cursor-pointer lg:transition-opacity lg:hover:opacity-70"></i>
-      <i className="pi pi-pencil cursor-pointer lg:transition-opacity lg:hover:opacity-70"></i>
-      <i className="pi pi-trash cursor-pointer lg:transition-opacity lg:hover:opacity-70"></i>
-    </div>
-  );
-}
+import type { TrackerFromDB } from "@/app/_types/tracker";
+// utils
 
 export default function TrackersTable() {
-  const mockArr: Tracker[] = [
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat recusandae veritatis illum et, quibusdam minus sint distinctio repellat libero iure ut temporibus eos unde facilis? Architecto aliquam perferendis distinctio ducimus magni fugit blanditiis sapiente libero numquam, ab nam, molestias voluptatibus beatae deleniti recusandae in eum. Ullam harum illum ratione exercitationem?",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-    {
-      timeLogged: "01:30:33",
-      dateCreated: "21/09/2023",
-      description: "This is a description",
-    },
-  ];
+  const storeTrackers = useStore((state) => state.trackers);
+  const [trackers, setTrackers] = useState<TrackerFromDB[]>([]);
+
+  useEffect(() => {
+    setTrackers(storeTrackers);
+  }, [storeTrackers]);
+
+  if (trackers.length < 1) {
+    return <ProgressSpinner />;
+  }
 
   return (
     <div className="w-full">
       <DataTable
-        value={mockArr}
+        value={trackers}
         tableStyle={{ minWidth: "45rem" }}
         paginator
         rows={5}
       >
         <Column
-          field="timeLogged"
+          field="loggedTime"
           header="Time Logged"
           headerClassName="font-bold"
           headerStyle={{
@@ -111,7 +51,11 @@ export default function TrackersTable() {
           headerStyle={{
             backgroundColor: "rgb(228 228 231)",
           }}
-          body={TrackersTableActions}
+          body={(data: TrackerFromDB) =>
+            TrackersTableActions({
+              trackerData: data,
+            })
+          }
         ></Column>
       </DataTable>
     </div>

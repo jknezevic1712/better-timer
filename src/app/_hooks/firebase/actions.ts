@@ -4,12 +4,13 @@ import {
   addDoc,
   doc,
   setDoc,
-  Timestamp,
-  serverTimestamp,
+  getDoc,
+  getDocs,
 } from "firebase/firestore";
 // types
 import type { User } from "firebase/auth";
 import useToast from "@/app/_hooks/toast/Toast";
+import type { TrackerToSend } from "@/app/_types/tracker";
 
 export default function useFirebaseActions() {
   const toast = useToast();
@@ -31,19 +32,20 @@ export default function useFirebaseActions() {
 
   async function addNewTracker(description: string) {
     if (currentUser) {
-      const trackerData = {
-        dateCreated: serverTimestamp(),
-        timeLogged: Timestamp.now(),
+      const trackerData: TrackerToSend = {
+        dateCreated: Date.now().toString(),
         description: description,
+        startTime: Date.now().toString(),
+        endTime: Date.now().toString(),
+        stopped: true,
       };
 
       try {
-        const docRef = await addDoc(
+        await addDoc(
           collection(db, `users/${currentUser.uid}/trackers`),
           trackerData,
         );
 
-        console.log("Document written with ID: ", docRef.id);
         toast("Successfully added a new tracker to DB!", "success");
         return;
       } catch (e) {
@@ -59,5 +61,25 @@ export default function useFirebaseActions() {
     return;
   }
 
-  return { addUserToDB, addNewTracker };
+  async function fetchTrackers() {
+    if (currentUser) {
+      try {
+        const trackersRef = collection(db, `users/${currentUser.uid}/trackers`);
+        const trackersSnap = await getDocs(trackersRef);
+        const data: Record<string, TrackerToSend> = {};
+
+        trackersSnap.forEach((doc) => {
+          data[doc.id] = doc.data() as TrackerToSend;
+        });
+
+        toast("Successfully fetched trackers from DB!", "success");
+        return data;
+      } catch (e) {
+        toast(`Error fetching trackers from DB, reason: ${e}`, "error");
+        return null;
+      }
+    }
+  }
+
+  return { addUserToDB, addNewTracker, fetchTrackers };
 }

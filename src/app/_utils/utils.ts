@@ -3,3 +3,7 @@ export function getNewDate(format?: "medium" | "full" | "long" | "short") {
     dateStyle: format,
   });
 }
+
+export function formatDateToTimestamp(date: string) {
+  return new Date(date).toTimeString().substring(0, 8);
+}
