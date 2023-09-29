@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // utils
-import { getDate } from "@/app/_utils/utils";
+import { getNewDate } from "@/app/_utils/utils";
 // components
 import TrackersTable from "../../organisms/trackersTable/TrackersTable";
 import TrackersActions from "../../molecules/trackersActions/TrackersActions";
@@ -10,7 +10,7 @@ export default function TrackersTemplate() {
   const [todaysDate, setTodaysDate] = useState("");
 
   useEffect(() => {
-    setTodaysDate(() => getDate("medium"));
+    setTodaysDate(() => getNewDate("medium"));
   }, []);
 
   return (
