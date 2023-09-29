@@ -1,5 +1,8 @@
+// components
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
+// types
+import { Tracker } from "@/app/_types/tracker";
 
 function TrackersTableActions() {
   return (
@@ -13,13 +16,8 @@ function TrackersTableActions() {
   );
 }
 
-interface Trackers {
-  timeLogged: string;
-  description: string;
-  dateCreated: string;
-}
 export default function TrackersTable() {
-  const mockArr: Trackers[] = [
+  const mockArr: Tracker[] = [
     {
       timeLogged: "01:30:33",
       dateCreated: "21/09/2023",

@@ -19,9 +19,6 @@ export default function useFirebaseActions() {
     const newUserData = {
       name: userData.displayName,
       email: userData.email,
-      trackers: {
-        allala: {},
-      },
     };
 
     try {
@@ -32,12 +29,12 @@ export default function useFirebaseActions() {
     }
   }
 
-  async function addNewTracker() {
+  async function addNewTracker(description: string) {
     if (currentUser) {
       const trackerData = {
         dateCreated: serverTimestamp(),
         timeLogged: Timestamp.now(),
-        description: "",
+        description: description,
       };
 
       try {
