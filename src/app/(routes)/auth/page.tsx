@@ -1,61 +1,50 @@
 "use client";
 
-import { useReducer } from "react";
 import useFirebaseAuth from "@/app/_hooks/firebase/auth";
+import { useForm, type SubmitHandler } from "react-hook-form";
 // components
 import AuthTemplate from "@/app/_components/templates/authTemplate/AuthTemplate";
+import { useState } from "react";
 
-export type AuthDispatchAction =
-  | { type: "CHANGE_EMAIL" | "CHANGE_PASSWORD"; payload: string }
-  | { type: "SWITCH_AUTH_FORM"; payload: null }
-  | { type: "AUTHENTICATE"; payload: null };
-
-const initialState = {
-  isSignUpForm: false,
-  email: "",
-  password: "",
+export type AuthForm = {
+  email: string;
+  password: string;
+  isSignUpForm: boolean;
 };
-type InitialState = typeof initialState;
-
-function authReducer(state: InitialState, action: AuthDispatchAction) {
-  const { type, payload } = action;
-
-  switch (type) {
-    case "CHANGE_EMAIL":
-      return { ...state, email: payload };
-    case "CHANGE_PASSWORD":
-      return { ...state, password: payload };
-    case "SWITCH_AUTH_FORM":
-      return { ...initialState, isSignUpForm: !state.isSignUpForm };
-    case "AUTHENTICATE":
-      return { ...initialState, isSignUpForm: state.isSignUpForm };
-    default:
-      return state;
-  }
-}
-
 export default function Auth() {
   const { signUpWithEmailAndPassword, signInUser } = useFirebaseAuth();
-  const [authState, dispatch] = useReducer(authReducer, initialState);
+  const [isSignUpForm, setIsSignUpForm] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AuthForm>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  function handleSubmit() {
-    dispatch({
-      type: "AUTHENTICATE",
-      payload: null,
-    });
+  const onSubmit: SubmitHandler<AuthForm> = (data) => {
+    const email = data.email.trim();
+    const password = data.password.trim();
 
-    if (authState.isSignUpForm) {
-      return signUpWithEmailAndPassword(authState.email, authState.password);
+    if (email.length > 1 && password.length > 1) {
+      if (isSignUpForm) {
+        return signUpWithEmailAndPassword(email, password);
+      }
+
+      return signInUser(email, password);
     }
-
-    return signInUser(authState.email, authState.password);
-  }
+  };
 
   return (
     <AuthTemplate
-      authState={authState}
-      dispatch={dispatch}
-      handleSubmit={handleSubmit}
+      register={register}
+      handleSubmit={handleSubmit(onSubmit)}
+      errors={errors}
+      isSignUpForm={isSignUpForm}
+      setIsSignUpForm={setIsSignUpForm}
     />
   );
 }
