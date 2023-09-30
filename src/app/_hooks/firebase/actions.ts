@@ -4,8 +4,6 @@ import {
   addDoc,
   doc,
   setDoc,
-  getDoc,
-  getDocs,
   query,
   onSnapshot,
   type Unsubscribe,
@@ -22,7 +20,6 @@ import { formatDateToTimestamp } from "@/app/_utils/utils";
 export default function useFirebaseActions() {
   const toast = useToast();
   const currentUser = auth.currentUser;
-  const storeTrackers = useStore((state) => state.trackers);
   const setTrackers = useStore((state) => state.setTrackers);
   let unsubscribeFetchTrackers: undefined | Unsubscribe;
 
@@ -47,7 +44,8 @@ export default function useFirebaseActions() {
           description: description,
           startTime: Date.now().toString(),
           endTime: Date.now().toString(),
-          stopped: true,
+          running: false,
+          active: true,
         };
         await addDoc(
           collection(db, `users/${currentUser.uid}/trackers`),
@@ -85,9 +83,11 @@ export default function useFirebaseActions() {
               loggedTime: formatDateToTimestamp(
                 +res[1].endTime - +res[1].startTime,
               ),
-              stopped: res[1].stopped,
+              running: res[1].running,
+              active: res[1].active,
             }),
           );
+
           setTrackers(structuredData);
 
           return;
@@ -103,21 +103,8 @@ export default function useFirebaseActions() {
   async function startTracker(id: string) {
     try {
       if (currentUser) {
-        const hasAnyTrackerRunning = storeTrackers.find(
-          (val) => val.stopped === false,
-        );
-
-        if (!hasAnyTrackerRunning) {
-          const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
-          setDoc(trackerRef, { stopped: false }, { merge: true });
-
-          return;
-        }
-
-        toast(
-          `Error starting a tricker, reason: there is another tracker already running!`,
-          "error",
-        );
+        const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
+        setDoc(trackerRef, { running: true }, { merge: true });
         return;
       }
 
@@ -131,7 +118,7 @@ export default function useFirebaseActions() {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
-        setDoc(trackerRef, { stopped: true }, { merge: true });
+        setDoc(trackerRef, { running: false }, { merge: true });
 
         return;
       }
@@ -146,7 +133,22 @@ export default function useFirebaseActions() {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
-        setDoc(trackerRef, { stopped: true }, { merge: true });
+        setDoc(trackerRef, { running: false, active: false }, { merge: true });
+
+        return;
+      }
+
+      throw "current user doesn't exist!";
+    } catch (e) {
+      toast(`Error stopping the tracker, reason: ${e}`, "error");
+    }
+  }
+
+  async function updateTrackerTime(id: string, endTime: string) {
+    try {
+      if (currentUser) {
+        const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
+        setDoc(trackerRef, { endTime }, { merge: true });
 
         return;
       }
@@ -165,5 +167,6 @@ export default function useFirebaseActions() {
     startTracker,
     pauseTracker,
     stopTracker,
+    updateTrackerTime,
   };
 }

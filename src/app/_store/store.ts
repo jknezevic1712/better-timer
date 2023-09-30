@@ -12,6 +12,7 @@ interface State {
 interface Actions {
   setUser: (newUser: User | null) => void;
   setTrackers: (newTrackers: TrackerFromDB[]) => void;
+  updateTracker: (trackerID: number, trackerData: TrackerFromDB) => void;
   resetState: () => void;
 }
 
@@ -28,6 +29,14 @@ export const useStore = create(
       setTrackers: (newTrackers) =>
         set((state) => ({ ...state, trackers: newTrackers })),
       resetState: () => set(initialState),
+      updateTracker: (trackerID, trackerData) =>
+        set((state) => ({
+          ...state,
+          trackers: [
+            ...state.trackers,
+            (state.trackers[trackerID] = trackerData),
+          ],
+        })),
     }),
     {
       name: "better-timer-storage",

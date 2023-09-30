@@ -14,7 +14,8 @@ export default function TrackersTable() {
   const [trackers, setTrackers] = useState<TrackerFromDB[]>([]);
 
   useEffect(() => {
-    setTrackers(storeTrackers);
+    const filteredTrackers = storeTrackers.filter((val) => val.active === true);
+    setTrackers(filteredTrackers);
   }, [storeTrackers]);
 
   if (trackers.length < 1) {
@@ -53,6 +54,7 @@ export default function TrackersTable() {
           }}
           body={(data: TrackerFromDB) =>
             TrackersTableActions({
+              trackers: trackers,
               trackerData: data,
             })
           }

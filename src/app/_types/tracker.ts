@@ -3,7 +3,8 @@ export type TrackerToSend = {
   description: string;
   startTime: string;
   endTime: string;
-  stopped: boolean;
+  active: boolean;
+  running: boolean;
 };
 
 export type TrackerFromDB = {
@@ -13,5 +14,6 @@ export type TrackerFromDB = {
   startTime: string;
   endTime: string;
   loggedTime: string;
-  stopped: boolean;
+  active: boolean;
+  running: boolean;
 };

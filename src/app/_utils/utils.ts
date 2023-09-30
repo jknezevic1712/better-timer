@@ -8,16 +8,20 @@ export function getTodaysDate() {
   return formattedDate;
 }
 
-export function formatDateToTimestamp(miliSecs: number) {
-  const ms = miliSecs % 1000;
-  miliSecs = (miliSecs - ms) / 1000;
+export function formatDateToTimestamp(miliSecs: number, formatMs?: boolean) {
+  if (formatMs) {
+    const ms = miliSecs % 1000;
+    miliSecs = (miliSecs - ms) / 1000;
+  }
 
-  const secs = miliSecs % 60;
-  miliSecs = (miliSecs - secs) / 60;
+  const seconds = (miliSecs % 60).toString().padStart(2, "0");
+  const minutes = Math.floor((miliSecs % 3600) / 60)
+    .toString()
+    .padStart(2, "0");
+  const hours = Math.floor(miliSecs / 3600)
+    .toString()
+    .padStart(2, "0");
 
-  const mins = miliSecs % 60;
-  const hrs = (miliSecs - mins) / 60;
-
-  const result = hrs + ":" + mins + ":" + secs;
-  return result;
+  const formattedTime = `${hours}:${minutes}:${seconds}`;
+  return formattedTime;
 }
