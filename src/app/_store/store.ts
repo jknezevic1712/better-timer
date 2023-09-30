@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import type { User } from "firebase/auth";
 import type { TrackerFromDB } from "../_types/tracker";
 
-interface Data {
+interface State {
   user: User | null;
   trackers: TrackerFromDB[];
 }
@@ -12,16 +12,22 @@ interface Data {
 interface Actions {
   setUser: (newUser: User | null) => void;
   setTrackers: (newTrackers: TrackerFromDB[]) => void;
+  resetState: () => void;
 }
 
+const initialState: State = {
+  user: null,
+  trackers: [],
+};
+
 export const useStore = create(
-  persist<Data & Actions>(
+  persist<State & Actions>(
     (set) => ({
-      user: null,
-      trackers: [],
+      ...initialState,
       setUser: (newUser) => set((state) => ({ ...state, user: newUser })),
       setTrackers: (newTrackers) =>
         set((state) => ({ ...state, trackers: newTrackers })),
+      resetState: () => set(initialState),
     }),
     {
       name: "better-timer-storage",

@@ -16,6 +16,7 @@ export default function useFirebaseAuth() {
   const toast = useToast();
   const router = useRouter();
   const setUser = useStore((state) => state.setUser);
+  const resetState = useStore((state) => state.resetState);
   const { addUserToDB } = useFirebaseActions();
 
   function signUpWithEmailAndPassword(email: string, password: string) {
@@ -48,6 +49,7 @@ export default function useFirebaseAuth() {
   function signOutUser() {
     signOut(auth);
     setUser(null);
+    resetState();
     toast("successfully signed out!", "success");
 
     router.push("/auth");
