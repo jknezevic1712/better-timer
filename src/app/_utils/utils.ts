@@ -1,7 +1,11 @@
-export function getNewDate(format?: "medium" | "full" | "long" | "short") {
-  return new Date(Date.now()).toLocaleString(undefined, {
-    dateStyle: format,
-  });
+export function getTodaysDate() {
+  const currentDate = new Date();
+  const day = currentDate.getDate();
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
+  const formattedDate = `${day}.${month}.${year}.`;
+
+  return formattedDate;
 }
 
 export function formatDateToTimestamp(miliSecs: number) {
