@@ -6,6 +6,7 @@ import {
   setDoc,
   query,
   onSnapshot,
+  deleteDoc,
   type Unsubscribe,
 } from "firebase/firestore";
 // types
@@ -144,6 +145,37 @@ export default function useFirebaseActions() {
     }
   }
 
+  async function editTracker(
+    id: string,
+    data: Pick<TrackerFromDB, "description" | "startTime" | "endTime">,
+  ) {
+    try {
+      if (currentUser) {
+        const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
+        setDoc(trackerRef, { ...data }, { merge: true });
+
+        return;
+      }
+
+      throw "current user doesn't exist!";
+    } catch (e) {
+      toast(`Error stopping the tracker, reason: ${e}`, "error");
+    }
+  }
+
+  async function deleteTracker(id: string) {
+    try {
+      if (currentUser) {
+        await deleteDoc(doc(db, `users/${currentUser.uid}/trackers`, id));
+        return;
+      }
+
+      throw "current user doesn't exist!";
+    } catch (e) {
+      toast(`Error stopping the tracker, reason: ${e}`, "error");
+    }
+  }
+
   async function updateTrackerTime(id: string, endTime: string) {
     try {
       if (currentUser) {
@@ -167,6 +199,8 @@ export default function useFirebaseActions() {
     startTracker,
     pauseTracker,
     stopTracker,
+    editTracker,
+    deleteTracker,
     updateTrackerTime,
   };
 }

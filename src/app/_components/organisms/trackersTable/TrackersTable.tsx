@@ -4,10 +4,9 @@ import useStore from "@/app/_store/store";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { ProgressSpinner } from "primereact/progressspinner";
-import TrackersTableActions from "../../molecules/trackersTableActions/TrackersTableActions";
+import TrackersTableActions from "../trackersTableActions/TrackersTableActions";
 // types
 import type { TrackerFromDB } from "@/app/_types/tracker";
-// utils
 
 export default function TrackersTable() {
   const storeTrackers = useStore((state) => state.trackers);
