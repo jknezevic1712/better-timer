@@ -27,6 +27,7 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<EditTrackerDialogForm>({});
   const { editTracker } = useFirebaseActions();
 
@@ -72,6 +73,15 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
     );
   }
 
+  function isEndDateLaterThanStartDate(endDate: Date) {
+    const startMs = getValues("startDate")
+      ? getValues("startDate")?.getTime()!
+      : +trackerData.startTime;
+    const endMs = endDate.getTime();
+
+    return endMs > startMs;
+  }
+
   return (
     <Dialog
       modal
@@ -93,10 +103,8 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
             hourFormat="24"
             showTime
             showSeconds
+            showIcon
           />
-          {errors.startDate && (
-            <small className="p-error">&#42;Please fill out this field.</small>
-          )}
         </div>
         <div className="field">
           <label htmlFor="endTime" className="font-bold">
@@ -104,13 +112,23 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
           </label>
           <Calendar
             id="endTime"
-            {...register("endDate")}
+            {...register("endDate", {
+              validate: {
+                laterThanStartTime: (v) =>
+                  isEndDateLaterThanStartDate(v!) ||
+                  "Please select a time that is later than the start time",
+              },
+            })}
             hourFormat="24"
             showTime
             showSeconds
+            showIcon
           />
-          {errors.endDate && (
-            <small className="p-error">&#42;Please fill out this field.</small>
+          {errors.endDate?.message && (
+            <small className="p-error">
+              &#42;
+              {errors.endDate.message}
+            </small>
           )}
         </div>
         <div className="field">
@@ -123,9 +141,6 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
             cols={20}
             {...register("description")}
           />
-          {errors.description && (
-            <small className="p-error">&#42;Please fill out this field.</small>
-          )}
         </div>
       </form>
     </Dialog>
