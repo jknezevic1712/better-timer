@@ -7,6 +7,7 @@ import {
   query,
   onSnapshot,
   deleteDoc,
+  writeBatch,
   type Unsubscribe,
 } from "firebase/firestore";
 // types
@@ -16,11 +17,12 @@ import type { TrackerFromDB, TrackerToSend } from "@/app/_types/tracker";
 import useToast from "@/app/_hooks/toast/Toast";
 import useStore from "@/app/_store/store";
 // utils
-import { formatDateToTimestamp } from "@/app/_utils/utils";
+import { filterTrackers, formatDateToTimestamp } from "@/app/_utils/utils";
 
 export default function useFirebaseActions() {
   const toast = useToast();
   const currentUser = auth.currentUser;
+  const trackers = useStore((state) => state.trackers);
   const setTrackers = useStore((state) => state.setTrackers);
   let unsubscribeFetchTrackers: undefined | Unsubscribe;
 
@@ -60,6 +62,33 @@ export default function useFirebaseActions() {
       throw "current user doesn't exist!";
     } catch (e) {
       toast(`Error adding a new tracker to DB, reason: ${e}`, "error");
+    }
+  }
+
+  async function stopAllTrackers() {
+    try {
+      if (currentUser) {
+        const batch = writeBatch(db);
+        const activeTrackers = filterTrackers(trackers, "active");
+
+        activeTrackers.forEach((tracker) => {
+          const trackerRef = doc(
+            db,
+            `users/${currentUser.uid}/trackers`,
+            tracker.id,
+          );
+          batch.update(trackerRef, { active: false });
+        });
+
+        await batch.commit();
+
+        toast("Successfully stopped all trackers!", "success");
+        return;
+      }
+
+      throw "current user doesn't exist!";
+    } catch (e) {
+      toast(`Error stopping all trackers, reason: ${e}`, "error");
     }
   }
 
@@ -194,6 +223,7 @@ export default function useFirebaseActions() {
   return {
     addUserToDB,
     addNewTracker,
+    stopAllTrackers,
     fetchTrackers,
     unsubscribeFetchTrackers,
     startTracker,

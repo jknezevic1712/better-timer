@@ -2,9 +2,12 @@ import { useState } from "react";
 // components
 import { Button } from "primereact/button";
 import NewTrackerDialog from "../../organisms/newTrackerDialog/NewTrackerDialog";
+// custom hooks
+import useFirebaseActions from "@/app/_hooks/firebase/actions";
 
-export default function TrackersActions() {
+export default function ActiveTrackersActions() {
   const [showDialog, setShowDialog] = useState(false);
+  const { stopAllTrackers } = useFirebaseActions();
 
   return (
     <>
@@ -20,7 +23,7 @@ export default function TrackersActions() {
           className="bg-accent"
           icon="pi pi-stop-circle"
           severity="secondary"
-          // onClick={() => stopAllTimers()}
+          onClick={() => stopAllTrackers()}
         />
       </div>
       {showDialog && (
