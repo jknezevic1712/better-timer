@@ -1,3 +1,6 @@
+// types
+import type { TrackerFromDB } from "../_types/tracker";
+
 export function getTodaysDate() {
   const currentDate = new Date();
   const day = currentDate.getDate();
@@ -22,4 +25,14 @@ export function formatDateToTimestamp(milliseconds: number) {
   const formattedTime = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 
   return formattedTime;
+}
+
+export function filterTrackers(
+  trackers: TrackerFromDB[],
+  trackerType: "active" | "history",
+) {
+  if (trackerType === "active")
+    return trackers.filter((val) => val.active === true);
+
+  return trackers.filter((val) => val.active === false);
 }
