@@ -20,8 +20,8 @@ export default function HistoryTrackersTable({
         emptyMessage="No inactive trackers found."
       >
         <Column
-          field="loggedTime"
-          header="Time Logged"
+          field="dateCreated"
+          header="Date"
           headerClassName="font-bold"
           headerStyle={{
             backgroundColor: "rgb(228 228 231)",
@@ -30,6 +30,14 @@ export default function HistoryTrackersTable({
         <Column
           field="description"
           header="Description"
+          headerClassName="font-bold"
+          headerStyle={{
+            backgroundColor: "rgb(228 228 231)",
+          }}
+        ></Column>
+        <Column
+          field="loggedTime"
+          header="Time tracked"
           headerClassName="font-bold"
           headerStyle={{
             backgroundColor: "rgb(228 228 231)",

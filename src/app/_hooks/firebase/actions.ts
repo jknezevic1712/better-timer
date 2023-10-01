@@ -17,7 +17,11 @@ import type { TrackerFromDB, TrackerToSend } from "@/app/_types/tracker";
 import useToast from "@/app/_hooks/toast/Toast";
 import useStore from "@/app/_store/store";
 // utils
-import { filterTrackers, formatDateToTimestamp } from "@/app/_utils/utils";
+import {
+  filterTrackers,
+  formatDateToTimestamp,
+  getFormattedDate,
+} from "@/app/_utils/utils";
 
 export default function useFirebaseActions() {
   const toast = useToast();
@@ -106,7 +110,7 @@ export default function useFirebaseActions() {
           const structuredData: TrackerFromDB[] = Object.entries(data).map(
             (res) => ({
               id: res[0],
-              dateCreated: +res[1].dateCreated,
+              dateCreated: getFormattedDate(+res[1].dateCreated),
               description: res[1].description,
               startTime: res[1].startTime,
               endTime: res[1].endTime,

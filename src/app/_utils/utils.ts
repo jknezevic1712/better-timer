@@ -1,8 +1,15 @@
 // types
 import type { TrackerFromDB } from "../_types/tracker";
 
-export function getTodaysDate() {
-  const currentDate = new Date();
+export function getFormattedDate(date?: number) {
+  let currentDate;
+
+  if (date) {
+    currentDate = new Date(date);
+  } else {
+    currentDate = new Date();
+  }
+
   const day = currentDate.getDate();
   const month = currentDate.getMonth() + 1;
   const year = currentDate.getFullYear();

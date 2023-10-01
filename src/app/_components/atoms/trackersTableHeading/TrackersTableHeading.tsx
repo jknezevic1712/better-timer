@@ -1,5 +1,5 @@
 // utils
-import { getTodaysDate } from "@/app/_utils/utils";
+import { getFormattedDate } from "@/app/_utils/utils";
 
 export default function TrackersTableHeading({
   headingType,
@@ -10,7 +10,8 @@ export default function TrackersTableHeading({
     if (headingType === "active")
       return (
         <>
-          <i className="pi pi-calendar text-xl"></i> Today ({getTodaysDate()})
+          <i className="pi pi-calendar text-xl"></i> Today ({getFormattedDate()}
+          )
         </>
       );
 
