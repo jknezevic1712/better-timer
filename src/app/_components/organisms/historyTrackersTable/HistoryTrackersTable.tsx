@@ -1,23 +1,15 @@
-import { useEffect, useState } from "react";
-import useStore from "@/app/_store/store";
 // components
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import TrackersTableActions from "../trackersTableActions/TrackersTableActions";
-// custom hooks
-import { filterTrackers } from "@/app/_utils/utils";
 // types
 import type { TrackerFromDB } from "@/app/_types/tracker";
 
-export default function HistoryTrackersTable() {
-  const storeTrackers = useStore((state) => state.trackers);
-  const [trackers, setTrackers] = useState<TrackerFromDB[]>([]);
-
-  useEffect(() => {
-    const filteredTrackers = filterTrackers(storeTrackers, "history");
-    setTrackers(filteredTrackers);
-  }, [storeTrackers]);
-
+export default function HistoryTrackersTable({
+  trackers,
+}: {
+  trackers: TrackerFromDB[];
+}) {
   return (
     <div className="w-full">
       <DataTable
@@ -25,7 +17,7 @@ export default function HistoryTrackersTable() {
         tableStyle={{ minWidth: "45rem" }}
         paginator
         rows={5}
-        emptyMessage="No active trackers found."
+        emptyMessage="No inactive trackers found."
       >
         <Column
           field="loggedTime"
