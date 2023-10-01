@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 // components
 import HeaderNav from "../../molecules/headerNav/HeaderNav";
+// custom hooks
 import useStore from "@/app/_store/store";
+// types
 import type { User } from "firebase/auth";
 
 export default function Header() {

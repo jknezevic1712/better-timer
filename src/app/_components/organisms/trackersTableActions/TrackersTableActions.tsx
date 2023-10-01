@@ -10,9 +10,11 @@ import type { TrackerFromDB } from "@/app/_types/tracker";
 export default function TrackersTableActions({
   trackers,
   trackerData,
+  trackerTableType,
 }: {
   trackers: TrackerFromDB[];
   trackerData: TrackerFromDB;
+  trackerTableType: "active" | "history";
 }) {
   const {
     startTracker,
@@ -80,13 +82,9 @@ export default function TrackersTableActions({
     setShowDialog(true);
   }
 
-  useEffect(() => {
-    return () => stopTimer();
-  }, []);
-
-  return (
-    <>
-      <div className="flex w-full items-center justify-start gap-3">
+  function ActiveTrackerTableActions() {
+    return (
+      <>
         <i
           className={`pi pi-pause cursor-pointer text-primary lg:transition-opacity lg:hover:opacity-70 ${
             trackerData.running === false && "pi-play"
@@ -97,6 +95,18 @@ export default function TrackersTableActions({
           className="pi pi-stop-circle cursor-pointer lg:transition-opacity lg:hover:opacity-70"
           onClick={() => stopTracker(trackerData.id)}
         ></i>
+      </>
+    );
+  }
+
+  useEffect(() => {
+    return () => stopTimer();
+  }, []);
+
+  return (
+    <>
+      <div className="flex w-full items-center justify-start gap-3">
+        {trackerTableType === "active" && <ActiveTrackerTableActions />}
         <i
           className="pi pi-pencil cursor-pointer lg:transition-opacity lg:hover:opacity-70"
           onClick={() => handleEditingTracker()}

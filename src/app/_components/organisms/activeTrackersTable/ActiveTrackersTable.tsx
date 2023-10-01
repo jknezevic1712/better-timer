@@ -3,23 +3,20 @@ import useStore from "@/app/_store/store";
 // components
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { ProgressSpinner } from "primereact/progressspinner";
 import TrackersTableActions from "../trackersTableActions/TrackersTableActions";
+// custom hooks
+import { filterTrackers } from "@/app/_utils/utils";
 // types
 import type { TrackerFromDB } from "@/app/_types/tracker";
 
-export default function TrackersTable() {
+export default function ActiveTrackersTable() {
   const storeTrackers = useStore((state) => state.trackers);
   const [trackers, setTrackers] = useState<TrackerFromDB[]>([]);
 
   useEffect(() => {
-    const filteredTrackers = storeTrackers.filter((val) => val.active === true);
+    const filteredTrackers = filterTrackers(storeTrackers, "active");
     setTrackers(filteredTrackers);
   }, [storeTrackers]);
-
-  if (trackers.length < 1) {
-    return <ProgressSpinner />;
-  }
 
   return (
     <div className="w-full">
@@ -28,6 +25,7 @@ export default function TrackersTable() {
         tableStyle={{ minWidth: "45rem" }}
         paginator
         rows={5}
+        emptyMessage="No active trackers found."
       >
         <Column
           field="loggedTime"
@@ -55,6 +53,7 @@ export default function TrackersTable() {
             TrackersTableActions({
               trackers: trackers,
               trackerData: data,
+              trackerTableType: "active",
             })
           }
         ></Column>

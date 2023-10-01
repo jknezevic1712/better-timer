@@ -1,11 +1,12 @@
 import { useRouter, usePathname } from "next/navigation";
+import { useRef } from "react";
 // components
 import Link from "next/link";
 import { Button } from "primereact/button";
+import { Menu } from "primereact/menu";
 // hooks
 import useFirebaseAuth from "@/app/_hooks/firebase/auth";
-import { Menu } from "primereact/menu";
-import { useRef } from "react";
+// types
 import type { MenuItem } from "primereact/menuitem";
 
 function DesktopNav({ signOutUser }: { signOutUser: () => void }) {
