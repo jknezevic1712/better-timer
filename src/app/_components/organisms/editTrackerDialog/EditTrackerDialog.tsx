@@ -77,7 +77,7 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
     const startMs = getValues("startDate")
       ? getValues("startDate")?.getTime()!
       : +trackerData.startTime;
-    const endMs = endDate.getTime();
+    const endMs = endDate ? endDate.getTime() : startMs + 1;
 
     return endMs > startMs;
   }
