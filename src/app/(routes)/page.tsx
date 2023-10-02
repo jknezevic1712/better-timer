@@ -1,6 +1,20 @@
-// components
+"use client";
+
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
+// custom hooks
+import useStore from "../_store/store";
 
 export default function Home() {
-  // TODO: implement logic here that checks if there's a user and if there is, redirect him to /trackers, otherwise redirect him to /auth
+  const storeUser = useStore((state) => state.user);
+
+  useEffect(() => {
+    if (!storeUser) {
+      redirect("/auth");
+    }
+
+    redirect("/trackers");
+  }, []);
+
   return <></>;
 }
