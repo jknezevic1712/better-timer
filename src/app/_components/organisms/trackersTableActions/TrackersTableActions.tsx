@@ -50,11 +50,15 @@ export default function TrackersTableActions({
     startTracker(trackerData.id);
   }
 
-  function stopTimer() {
-    if (trackerInterval) {
+  function stopTimer(unmounting?: boolean) {
+    if (trackerInterval && !unmounting) {
       clearInterval(trackerInterval);
       setTrackerInterval(null);
       setIntervalTime(0);
+      pauseTracker(trackerData.id);
+    }
+
+    if (unmounting && trackerData.running) {
       pauseTracker(trackerData.id);
     }
   }
@@ -100,7 +104,7 @@ export default function TrackersTableActions({
   }
 
   useEffect(() => {
-    return () => stopTimer();
+    return () => stopTimer(true);
   }, []);
 
   return (

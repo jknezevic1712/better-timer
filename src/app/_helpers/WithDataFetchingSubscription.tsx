@@ -11,8 +11,9 @@ export default function withDataFetchingSubscription(
     useEffect(() => {
       fetchTrackers();
 
+      const unsubscribe = unsubscribeFetchTrackers.current;
       return () => {
-        unsubscribeFetchTrackers && unsubscribeFetchTrackers();
+        unsubscribe && unsubscribe();
       };
     }, []);
 

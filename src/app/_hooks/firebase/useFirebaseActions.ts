@@ -1,4 +1,5 @@
-import { auth, db } from "@/server/api/firebase/firebase-config";
+import { useRef } from "react";
+import { db } from "@/server/api/firebase/firebase-config";
 import {
   collection,
   addDoc,
@@ -8,12 +9,11 @@ import {
   onSnapshot,
   deleteDoc,
   writeBatch,
-  type Unsubscribe,
-  getDoc,
 } from "firebase/firestore";
 // types
 import type { User } from "firebase/auth";
 import type { TrackerFromDB, TrackerToSend } from "@/app/_types/tracker";
+import type { Unsubscribe } from "firebase/firestore";
 // custom hooks
 import useToast from "@/app/_hooks/toast/useToast";
 import useStore from "@/app/_store/store";
@@ -23,25 +23,15 @@ import {
   formatDateToTimestamp,
   getFormattedDate,
 } from "@/app/_helpers/helpers";
-import useTrackerActions from "../tracker/useTrackerActions";
-import { useCallback } from "react";
+import type { MutableRefObject } from "react";
 
 export default function useFirebaseActions() {
-  // console.log(
-  //   "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-  // );
   const toast = useToast();
   const currentUser = useStore((state) => state.user);
-  // const currentUser = auth.currentUser;
   const trackers = useStore((state) => state.trackers);
   const setTrackers = useStore((state) => state.setTrackers);
-  // const {
-  //   user: currentUser,
-  //   trackers,
-  //   setTrackers,
-  // } = useStore((state) => state);
-  // const { startTimer } = useTrackerActions();
-  let unsubscribeFetchTrackers: undefined | Unsubscribe;
+  const unsubscribeFetchTrackers: MutableRefObject<Unsubscribe | undefined> =
+    useRef();
 
   async function addUserToDB(userData: User) {
     const newUserData = {
@@ -52,11 +42,11 @@ export default function useFirebaseActions() {
     try {
       await setDoc(doc(db, "users", userData.uid), newUserData);
     } catch (e) {
-      toast(`Error adding user to DB, reason: ${e}`, "error");
+      toast(`Error adding user, reason: ${e}`, "error");
     }
   }
 
-  const addNewTracker = useCallback(async (description: string) => {
+  const addNewTracker = async (description: string) => {
     try {
       if (currentUser) {
         const todaysDate = Date.now().toString();
@@ -72,41 +62,22 @@ export default function useFirebaseActions() {
           running: false,
           active: true,
         };
-        const newTrackerRef = await addDoc(
+
+        await addDoc(
           collection(db, `users/${currentUser.uid}/trackers`),
           trackerData,
         );
 
-        const isAnotherTrackerRunning = trackers.find(
-          (val) => val.running === true,
-        );
-
-        if (!isAnotherTrackerRunning) {
-          const newTracker = await getDoc(newTrackerRef);
-          const newTrackerData = newTracker.data() as TrackerToSend | undefined;
-
-          if (newTrackerData) {
-            // startTimer({
-            //   id: newTrackerRef.id,
-            //   endTime: newTrackerData.endTime,
-            // });
-            toast("Successfully started the new tracker!", "success");
-          }
-
-          throw "error starting the new tracker!";
-        }
-
-        toast("Successfully added a new tracker to DB!", "success");
-        throw "couldn't start the tracker because another one is already running!";
+        toast("Successfully added a new tracker!", "success");
       }
 
       throw "current user doesn't exist!";
     } catch (e) {
-      toast(`Error adding a new tracker to DB, reason: ${e}`, "error");
+      toast(`Error adding a new tracker, reason: ${e}`, "error");
     }
-  }, []);
+  };
 
-  const stopAllTrackers = useCallback(async () => {
+  const stopAllTrackers = async () => {
     try {
       if (currentUser) {
         const batch = writeBatch(db);
@@ -131,13 +102,13 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping all trackers, reason: ${e}`, "error");
     }
-  }, []);
+  };
 
-  const fetchTrackers = useCallback((): void | Unsubscribe => {
+  const fetchTrackers = (): void | Unsubscribe => {
     try {
       if (currentUser) {
         const q = query(collection(db, `users/${currentUser.uid}/trackers`));
-        unsubscribeFetchTrackers = onSnapshot(q, (querySnapshot) => {
+        unsubscribeFetchTrackers.current = onSnapshot(q, (querySnapshot) => {
           const data: Record<string, TrackerToSend> = {};
 
           querySnapshot.forEach((doc) => {
@@ -169,9 +140,9 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error fetching trackers from DB, reason: ${e}`, "error");
     }
-  }, []);
+  };
 
-  const startTracker = useCallback((id: string) => {
+  const startTracker = (id: string) => {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
@@ -183,15 +154,13 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error starting the tracker, reason: ${e}`, "error");
     }
-  }, []);
+  };
 
-  const pauseTracker = useCallback((id: string) => {
+  const pauseTracker = (id: string) => {
     try {
-      console.log("pauseTracker");
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
         setDoc(trackerRef, { running: false }, { merge: true });
-        console.log("pauseTracker DONE");
         return;
       }
 
@@ -199,9 +168,9 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error pausing the tracker, reason: ${e}`, "error");
     }
-  }, []);
+  };
 
-  const stopTracker = useCallback((id: string) => {
+  const stopTracker = (id: string) => {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
@@ -214,30 +183,27 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping the tracker, reason: ${e}`, "error");
     }
-  }, []);
+  };
 
-  const editTracker = useCallback(
-    (
-      id: string,
-      data: Pick<TrackerFromDB, "description" | "startTime" | "endTime">,
-    ) => {
-      try {
-        if (currentUser) {
-          const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
-          setDoc(trackerRef, { ...data }, { merge: true });
+  const editTracker = (
+    id: string,
+    data: Pick<TrackerFromDB, "description" | "startTime" | "endTime">,
+  ) => {
+    try {
+      if (currentUser) {
+        const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
+        setDoc(trackerRef, { ...data }, { merge: true });
 
-          return;
-        }
-
-        throw "current user doesn't exist!";
-      } catch (e) {
-        toast(`Error stopping the tracker, reason: ${e}`, "error");
+        return;
       }
-    },
-    [],
-  );
 
-  const deleteTracker = useCallback(async (id: string) => {
+      throw "current user doesn't exist!";
+    } catch (e) {
+      toast(`Error stopping the tracker, reason: ${e}`, "error");
+    }
+  };
+
+  const deleteTracker = async (id: string) => {
     try {
       if (currentUser) {
         await deleteDoc(doc(db, `users/${currentUser.uid}/trackers`, id));
@@ -248,9 +214,9 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping the tracker, reason: ${e}`, "error");
     }
-  }, []);
+  };
 
-  const updateTrackerTime = useCallback((id: string, endTime: string) => {
+  const updateTrackerTime = (id: string, endTime: string) => {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
@@ -263,7 +229,7 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping the tracker, reason: ${e}`, "error");
     }
-  }, []);
+  };
 
   return {
     addUserToDB,
