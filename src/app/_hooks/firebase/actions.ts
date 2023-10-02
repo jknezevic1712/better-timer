@@ -46,11 +46,16 @@ export default function useFirebaseActions() {
   async function addNewTracker(description: string) {
     try {
       if (currentUser) {
+        const todaysDate = Date.now().toString();
+
         const trackerData: TrackerToSend = {
-          dateCreated: Date.now().toString(),
+          dateCreated: {
+            ms: todaysDate,
+            formatted: getFormattedDate(+todaysDate),
+          },
           description: description,
-          startTime: Date.now().toString(),
-          endTime: Date.now().toString(),
+          startTime: todaysDate,
+          endTime: todaysDate,
           running: false,
           active: true,
         };
@@ -110,8 +115,7 @@ export default function useFirebaseActions() {
           const structuredData: TrackerFromDB[] = Object.entries(data).map(
             (res) => ({
               id: res[0],
-              dateCreated: +res[1].dateCreated,
-              dateCreatedFormatted: getFormattedDate(+res[1].dateCreated),
+              dateCreated: res[1].dateCreated,
               description: res[1].description,
               startTime: res[1].startTime,
               endTime: res[1].endTime,

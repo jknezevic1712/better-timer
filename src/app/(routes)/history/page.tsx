@@ -30,10 +30,10 @@ export default function History() {
       (tracker) =>
         tracker.description.trim().includes(filterData.description) &&
         (filterData.startTime
-          ? tracker.dateCreated >= +filterData.startTime
+          ? +tracker.dateCreated.ms >= +filterData.startTime
           : true) &&
         (filterData.endTime
-          ? tracker.dateCreated <= +filterData.endTime
+          ? +tracker.dateCreated.ms <= +filterData.endTime
           : true),
     );
   }

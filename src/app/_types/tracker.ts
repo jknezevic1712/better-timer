@@ -1,20 +1,16 @@
-export type TrackerToSend = {
-  dateCreated: string;
+export interface TrackerToSend {
+  dateCreated: {
+    ms: string;
+    formatted: string;
+  };
   description: string;
   startTime: string;
   endTime: string;
   active: boolean;
   running: boolean;
-};
+}
 
-export type TrackerFromDB = {
+export interface TrackerFromDB extends TrackerToSend {
   id: string;
-  dateCreated: number;
-  dateCreatedFormatted: string;
-  description: string;
-  startTime: string;
-  endTime: string;
   loggedTime: string;
-  active: boolean;
-  running: boolean;
-};
+}

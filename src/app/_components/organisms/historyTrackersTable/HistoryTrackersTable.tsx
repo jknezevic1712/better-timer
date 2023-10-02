@@ -20,7 +20,7 @@ export default function HistoryTrackersTable({
         emptyMessage="No inactive trackers found."
       >
         <Column
-          field="dateCreatedFormatted"
+          field="dateCreated.formatted"
           header="Date"
           headerClassName="font-bold"
           headerStyle={{
