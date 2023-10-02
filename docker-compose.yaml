@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  app:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_FIREBASE_API_KEY: "AIzaSyD2AAMn5gpE0fchYESDB2t21NfYHlhYvzg"
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "better-timer-945d2.firebaseapp.com"
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: "better-timer-945d2"
+        NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: "better-timer-945d2.appspot.com"
+        NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "892313361097"
+        NEXT_PUBLIC_FIREBASE_APP_ID: "1:892313361097:web:d1d43e0e59c9c529a90b18"
+        NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: "G-EK0Y3ZF26Z"
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    image: better-timer-image
