@@ -4,9 +4,18 @@ import HistoryTrackersActions from "../../molecules/historyTrackersActions/Histo
 import HistoryTrackersTable from "../../organisms/historyTrackersTable/HistoryTrackersTable";
 // types
 import type { TrackerFromDB } from "@/app/_types/tracker";
-import type { FilterData } from "@/app/(routes)/history/page";
 import type { Dispatch, SetStateAction } from "react";
 
+export type FilterData = {
+  startTime: string | null;
+  endTime: string | null;
+  description: string;
+};
+export const filterInitialData: FilterData = {
+  startTime: null,
+  endTime: null,
+  description: "",
+};
 export type HistoryTemplateProps = {
   filterData: FilterData;
   setFilterData: Dispatch<SetStateAction<FilterData>>;
