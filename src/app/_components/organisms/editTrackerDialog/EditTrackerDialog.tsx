@@ -75,7 +75,7 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
 
   function isEndDateLaterThanStartDate(endDate: Date) {
     const startMs = getValues("startDate")
-      ? getValues("startDate")?.getTime()!
+      ? getValues("startDate")!.getTime()
       : +trackerData.startTime;
     const endMs = endDate ? endDate.getTime() : startMs + 1;
 
