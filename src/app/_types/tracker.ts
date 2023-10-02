@@ -9,7 +9,8 @@ export type TrackerToSend = {
 
 export type TrackerFromDB = {
   id: string;
-  dateCreated: string;
+  dateCreated: number;
+  dateCreatedFormatted: string;
   description: string;
   startTime: string;
   endTime: string;

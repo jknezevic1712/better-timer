@@ -110,7 +110,8 @@ export default function useFirebaseActions() {
           const structuredData: TrackerFromDB[] = Object.entries(data).map(
             (res) => ({
               id: res[0],
-              dateCreated: getFormattedDate(+res[1].dateCreated),
+              dateCreated: +res[1].dateCreated,
+              dateCreatedFormatted: getFormattedDate(+res[1].dateCreated),
               description: res[1].description,
               startTime: res[1].startTime,
               endTime: res[1].endTime,
