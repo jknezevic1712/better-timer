@@ -5,7 +5,7 @@ import { Dialog } from "primereact/dialog";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Calendar } from "primereact/calendar";
 // custom hooks
-import useFirebaseActions from "@/app/_hooks/firebase/actions";
+import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
 // types
 import type { Dispatch, SetStateAction } from "react";
 import type { SubmitHandler } from "react-hook-form";

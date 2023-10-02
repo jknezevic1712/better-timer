@@ -1,6 +1,6 @@
 "use client";
 
-import useFirebaseAuth from "@/app/_hooks/firebase/auth";
+import useFirebaseAuth from "@/app/_hooks/firebase/useFirebaseAuth";
 import { useForm, type SubmitHandler } from "react-hook-form";
 // components
 import AuthTemplate from "@/app/_components/templates/authTemplate/AuthTemplate";

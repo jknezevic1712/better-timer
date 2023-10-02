@@ -7,8 +7,8 @@ import {
 import { auth } from "@/server/api/firebase/firebase-config";
 // hooks
 import useStore from "@/app/_store/store";
-import useToast from "@/app/_hooks/toast/Toast";
-import useFirebaseActions from "./actions";
+import useToast from "@/app/_hooks/toast/useToast";
+import useFirebaseActions from "./useFirebaseActions";
 // types
 import type { FirebaseError } from "firebase/app";
 

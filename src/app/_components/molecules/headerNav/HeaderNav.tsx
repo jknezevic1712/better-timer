@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "primereact/button";
 import { Menu } from "primereact/menu";
 // hooks
-import useFirebaseAuth from "@/app/_hooks/firebase/auth";
+import useFirebaseAuth from "@/app/_hooks/firebase/useFirebaseAuth";
 // types
 import type { MenuItem } from "primereact/menuitem";
 

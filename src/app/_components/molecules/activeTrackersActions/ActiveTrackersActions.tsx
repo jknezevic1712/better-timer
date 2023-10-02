@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "primereact/button";
 import NewTrackerDialog from "../../organisms/newTrackerDialog/NewTrackerDialog";
 // custom hooks
-import useFirebaseActions from "@/app/_hooks/firebase/actions";
+import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
 
 export default function ActiveTrackersActions() {
   const [showDialog, setShowDialog] = useState(false);

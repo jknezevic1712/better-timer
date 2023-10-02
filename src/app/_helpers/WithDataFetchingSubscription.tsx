@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 // custom hooks
-import useFirebaseActions from "@/app/_hooks/firebase/actions";
+import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
 
 export default function withDataFetchingSubscription(
   Component: (props: any) => React.ReactNode,

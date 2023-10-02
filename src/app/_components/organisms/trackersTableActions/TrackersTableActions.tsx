@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 // components
 import EditTrackerDialog from "../editTrackerDialog/EditTrackerDialog";
 // custom hooks
-import useFirebaseActions from "@/app/_hooks/firebase/actions";
-import useToast from "@/app/_hooks/toast/Toast";
+import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
+import useToast from "@/app/_hooks/toast/useToast";
 // types
 import type { TrackerFromDB } from "@/app/_types/tracker";
 
