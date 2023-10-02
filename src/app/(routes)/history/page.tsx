@@ -7,8 +7,9 @@ import HistoryTemplate from "@/app/_components/templates/historyTemplate/History
 import useStore from "@/app/_store/store";
 // types
 import type { TrackerFromDB } from "@/app/_types/tracker";
-// utils
-import { filterTrackers } from "@/app/_utils/utils";
+// helpers
+import { filterTrackers } from "@/app/_helpers/helpers";
+import withDataFetchingSubscription from "@/app/_helpers/WithDataFetchingSubscription";
 
 export type FilterData = {
   startTime: string | null;
@@ -20,7 +21,7 @@ export const filterInitialData: FilterData = {
   endTime: null,
   description: "",
 };
-export default function History() {
+function History() {
   const storeTrackers = useStore((state) => state.trackers);
   const [trackers, setTrackers] = useState<TrackerFromDB[]>([]);
   const [filterData, setFilterData] = useState<FilterData>(filterInitialData);
@@ -50,3 +51,7 @@ export default function History() {
     />
   );
 }
+
+const HomeWithSubscription = withDataFetchingSubscription(History);
+
+export default HomeWithSubscription;

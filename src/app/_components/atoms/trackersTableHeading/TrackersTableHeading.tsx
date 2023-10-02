@@ -1,5 +1,5 @@
-// utils
-import { getFormattedDate } from "@/app/_utils/utils";
+// helpers
+import { getFormattedDate } from "@/app/_helpers/helpers";
 
 export default function TrackersTableHeading({
   headingType,
