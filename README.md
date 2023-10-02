@@ -21,4 +21,4 @@
 
 ## Vercel
 
-1. Go to `https://better-timer.vercel.app`
+1. [App is also deployed on Vercel](https://better-timer.vercel.app)
