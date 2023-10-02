@@ -1,4 +1,4 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 // components
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -8,6 +8,7 @@ import { Calendar } from "primereact/calendar";
 import useFirebaseActions from "@/app/_hooks/firebase/actions";
 // types
 import type { Dispatch, SetStateAction } from "react";
+import type { SubmitHandler } from "react-hook-form";
 import type { TrackerFromDB } from "@/app/_types/tracker";
 
 type EditTrackerDialogProps = {
@@ -17,30 +18,24 @@ type EditTrackerDialogProps = {
   trackerData: TrackerFromDB;
 };
 type EditTrackerDialogForm = {
-  startDate?: Date;
-  endDate?: Date;
-  description?: string;
+  startDate: Date;
+  endDate: Date;
+  description: string;
 };
 export default function EditTrackerDialog(props: EditTrackerDialogProps) {
   const { showDialog, setShowDialog, trackerID, trackerData } = props;
   const {
-    register,
     handleSubmit,
     formState: { errors },
     getValues,
-  } = useForm<EditTrackerDialogForm>({});
+    control,
+  } = useForm<EditTrackerDialogForm>();
   const { editTracker } = useFirebaseActions();
 
   const onSubmit: SubmitHandler<EditTrackerDialogForm> = (data) => {
-    const startTime = data.startDate
-      ? Date.parse(data.startDate.toString()).toString()
-      : trackerData.startTime;
-    const endTime = data.endDate
-      ? Date.parse(data.endDate.toString()).toString()
-      : trackerData.endTime;
-    const description = data.description
-      ? data.description.trim()
-      : trackerData.description;
+    const startTime = Date.parse(data.startDate.toString()).toString();
+    const endTime = Date.parse(data.endDate.toString()).toString();
+    const description = data.description.trim();
 
     if (description.length > 1) {
       editTracker(trackerID, {
@@ -97,32 +92,50 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
           <label htmlFor="startDate" className="font-bold">
             Start Date
           </label>
-          <Calendar
-            id="startDate"
-            {...register("startDate")}
-            hourFormat="24"
-            showTime
-            showSeconds
-            showIcon
+          <Controller
+            name="startDate"
+            control={control}
+            defaultValue={new Date(+trackerData.startTime)}
+            render={({ field }) => (
+              <Calendar
+                id="startDate"
+                value={field.value}
+                onChange={(e) => field.onChange(e.value)}
+                hourFormat="24"
+                showTime
+                showSeconds
+                showIcon
+              />
+            )}
           />
         </div>
         <div className="field">
-          <label htmlFor="endTime" className="font-bold">
+          <label htmlFor="endDate" className="font-bold">
             End Time
           </label>
-          <Calendar
-            id="endTime"
-            {...register("endDate", {
+          <Controller
+            name="endDate"
+            control={control}
+            defaultValue={new Date(+trackerData.endTime)}
+            rules={{
               validate: {
                 laterThanStartTime: (v) =>
                   isEndDateLaterThanStartDate(v!) ||
                   "Please select a time that is later than the start time",
               },
-            })}
-            hourFormat="24"
-            showTime
-            showSeconds
-            showIcon
+              required: true,
+            }}
+            render={({ field }) => (
+              <Calendar
+                id="endDate"
+                value={field.value}
+                onChange={(e) => field.onChange(e.value)}
+                hourFormat="24"
+                showTime
+                showSeconds
+                showIcon
+              />
+            )}
           />
           {errors.endDate?.message && (
             <small className="p-error">
@@ -135,11 +148,22 @@ export default function EditTrackerDialog(props: EditTrackerDialogProps) {
           <label htmlFor="description" className="font-bold">
             Description
           </label>
-          <InputTextarea
-            id="description"
-            rows={3}
-            cols={20}
-            {...register("description")}
+          <Controller
+            name="description"
+            control={control}
+            defaultValue={trackerData.description}
+            rules={{
+              required: true,
+            }}
+            render={({ field }) => (
+              <InputTextarea
+                id="description"
+                rows={3}
+                cols={20}
+                value={field.value}
+                onChange={(e) => field.onChange(e.target.value)}
+              />
+            )}
           />
         </div>
       </form>
