@@ -16,12 +16,12 @@ import type { TrackerFromDB, TrackerToSend } from "@/app/_types/tracker";
 // custom hooks
 import useToast from "@/app/_hooks/toast/Toast";
 import useStore from "@/app/_store/store";
-// utils
+// helpers
 import {
   filterTrackers,
   formatDateToTimestamp,
   getFormattedDate,
-} from "@/app/_utils/utils";
+} from "@/app/_helpers/helpers";
 
 export default function useFirebaseActions() {
   const toast = useToast();
