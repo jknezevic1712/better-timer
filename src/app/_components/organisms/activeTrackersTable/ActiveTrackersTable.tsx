@@ -5,7 +5,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import TrackersTableActions from "../trackersTableActions/TrackersTableActions";
 // custom hooks
-import { filterTrackers } from "@/app/_utils/utils";
+import { filterTrackers } from "@/app/_helpers/helpers";
 // types
 import type { TrackerFromDB } from "@/app/_types/tracker";
 
