@@ -49,11 +49,12 @@ export default function ActiveTrackersTable() {
           headerStyle={{
             backgroundColor: "rgb(228 228 231)",
           }}
-          body={(data: TrackerForApp) =>
+          body={(data: TrackerForApp, { rowIndex }) =>
             TrackersTableActions({
               trackers: trackers,
               trackerData: data,
               trackerTableType: "active",
+              trackerRowIndex: rowIndex,
             })
           }
         ></Column>
