@@ -7,11 +7,11 @@ import TrackersTableActions from "../trackersTableActions/TrackersTableActions";
 // custom hooks
 import { filterTrackers } from "@/app/_helpers/helpers";
 // types
-import type { TrackerFromDB } from "@/app/_types/tracker";
+import type { TrackerForApp } from "@/app/_types/tracker";
 
 export default function ActiveTrackersTable() {
   const storeTrackers = useStore((state) => state.trackers);
-  const [trackers, setTrackers] = useState<TrackerFromDB[]>([]);
+  const [trackers, setTrackers] = useState<TrackerForApp[]>([]);
 
   useEffect(() => {
     const filteredTrackers = filterTrackers(storeTrackers, "active");
@@ -49,11 +49,12 @@ export default function ActiveTrackersTable() {
           headerStyle={{
             backgroundColor: "rgb(228 228 231)",
           }}
-          body={(data: TrackerFromDB) =>
+          body={(data: TrackerForApp, { rowIndex }) =>
             TrackersTableActions({
               trackers: trackers,
               trackerData: data,
               trackerTableType: "active",
+              trackerRowIndex: rowIndex,
             })
           }
         ></Column>

@@ -1,5 +1,5 @@
 // types
-import type { TrackerFromDB } from "../_types/tracker";
+import type { TrackerForApp } from "../_types/tracker";
 
 export function getFormattedDate(date?: number) {
   let currentDate;
@@ -35,7 +35,7 @@ export function formatDateToTimestamp(milliseconds: number) {
 }
 
 export function filterTrackers(
-  trackers: TrackerFromDB[],
+  trackers: TrackerForApp[],
   trackerType: "active" | "history",
 ) {
   if (trackerType === "active")

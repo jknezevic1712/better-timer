@@ -3,7 +3,7 @@ import TrackersTableHeading from "../../atoms/trackersTableHeading/TrackersTable
 import HistoryTrackersActions from "../../molecules/historyTrackersActions/HistoryTrackersActions";
 import HistoryTrackersTable from "../../organisms/historyTrackersTable/HistoryTrackersTable";
 // types
-import type { TrackerFromDB } from "@/app/_types/tracker";
+import type { TrackerForApp } from "@/app/_types/tracker";
 import type { Dispatch, SetStateAction } from "react";
 
 export type FilterData = {
@@ -19,7 +19,7 @@ export const filterInitialData: FilterData = {
 export type HistoryTemplateProps = {
   filterData: FilterData;
   setFilterData: Dispatch<SetStateAction<FilterData>>;
-  trackers: TrackerFromDB[];
+  trackers: TrackerForApp[];
 };
 export default function HistoryTemplate(props: HistoryTemplateProps) {
   const { filterData, setFilterData, trackers } = props;

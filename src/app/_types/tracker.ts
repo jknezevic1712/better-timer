@@ -1,4 +1,4 @@
-export interface TrackerToSend {
+export interface TrackerForDB {
   dateCreated: {
     ms: string;
     formatted: string;
@@ -10,7 +10,7 @@ export interface TrackerToSend {
   running: boolean;
 }
 
-export interface TrackerFromDB extends TrackerToSend {
+export interface TrackerForApp extends TrackerForDB {
   id: string;
   loggedTime: string;
 }
