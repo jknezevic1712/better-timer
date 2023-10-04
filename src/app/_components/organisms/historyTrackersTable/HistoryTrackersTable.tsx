@@ -3,12 +3,12 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import TrackersTableActions from "../trackersTableActions/TrackersTableActions";
 // types
-import type { TrackerForApp } from "@/app/_types/tracker";
+import type { TrackerFromDB } from "@/app/_types/tracker";
 
 export default function HistoryTrackersTable({
   trackers,
 }: {
-  trackers: TrackerForApp[];
+  trackers: TrackerFromDB[];
 }) {
   return (
     <div className="w-full">
@@ -49,7 +49,7 @@ export default function HistoryTrackersTable({
           headerStyle={{
             backgroundColor: "rgb(228 228 231)",
           }}
-          body={(data: TrackerForApp) =>
+          body={(data: TrackerFromDB) =>
             TrackersTableActions({
               trackers: trackers,
               trackerData: data,
