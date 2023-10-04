@@ -216,6 +216,41 @@ export default function useFirebaseActions() {
     }
   }
 
+  async function syncTrackers(trackers: TrackerFromDB[]) {
+    try {
+      if (currentUser) {
+        const batch = writeBatch(db);
+
+        trackers.forEach((tracker) => {
+          const formattedTracker: TrackerToSend = {
+            description: tracker.description,
+            startTime: tracker.startTime,
+            endTime: tracker.endTime,
+            dateCreated: tracker.dateCreated,
+            active: tracker.active,
+            running: tracker.running,
+          };
+
+          const trackerRef = doc(
+            db,
+            `users/${currentUser.uid}/trackers`,
+            tracker.id,
+          );
+          batch.update(trackerRef, { ...formattedTracker });
+        });
+
+        await batch.commit();
+
+        toast("Successfully synced trackers!", "success");
+        return;
+      }
+
+      throw "current user doesn't exist!";
+    } catch (e) {
+      toast(`Error syncing trackers, reason: ${e}`, "error");
+    }
+  }
+
   function updateTrackerTime(id: string, endTime: string) {
     try {
       if (currentUser) {
@@ -242,6 +277,7 @@ export default function useFirebaseActions() {
     stopTracker,
     editTracker,
     deleteTracker,
+    syncTrackers,
     updateTrackerTime,
   };
 }
