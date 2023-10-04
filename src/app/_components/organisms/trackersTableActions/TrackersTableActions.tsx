@@ -5,26 +5,24 @@ import EditTrackerDialog from "../editTrackerDialog/EditTrackerDialog";
 import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
 import useToast from "@/app/_hooks/toast/useToast";
 // types
-import type { TrackerForApp } from "@/app/_types/tracker";
-import useStore from "@/app/_store/store";
+import type { TrackerFromDB } from "@/app/_types/tracker";
 
 export default function TrackersTableActions({
   trackers,
   trackerData,
   trackerTableType,
-  trackerRowIndex,
 }: {
-  trackers: TrackerForApp[];
-  trackerData: TrackerForApp;
+  trackers: TrackerFromDB[];
+  trackerData: TrackerFromDB;
   trackerTableType: "active" | "history";
-  trackerRowIndex: number;
 }) {
-  const { startTracker, pauseTracker, stopTracker, deleteTracker } =
-    useFirebaseActions();
-  const storeTrackers = useStore((state) => state.trackers);
-  const updateTrackerTimeByID = useStore(
-    (state) => state.updateTrackerTimeByID,
-  );
+  const {
+    startTracker,
+    pauseTracker,
+    stopTracker,
+    deleteTracker,
+    updateTrackerTime,
+  } = useFirebaseActions();
   const toast = useToast();
   const [trackerInterval, setTrackerInterval] = useState<NodeJS.Timeout | null>(
     null,
@@ -32,43 +30,21 @@ export default function TrackersTableActions({
   const [_, setIntervalTime] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
 
-  console.log("REEEEEEEEEEEEEEENDER ", trackerData);
-
   function startTimer() {
     setTrackerInterval(
-      setInterval(() => {
-        console.log("storeTrackers ", storeTrackers);
-        console.log(
-          "storeTrackers ",
-          storeTrackers[trackerRowIndex],
-          ", trackerRowIndex",
-          trackerRowIndex,
-        );
-        // const newStateValue = trackerInterval + 1;
+      setInterval(
+        () =>
+          setIntervalTime((prevTotalSeconds) => {
+            const newStateValue = prevTotalSeconds + 1;
 
-        // const secsToMs = trackerData.endTime + 1000;
-        const updatedTime = (+trackerData.endTime + 1000).toString();
+            const secsToMs = newStateValue * 1000;
+            const updatedTime = (+trackerData.endTime + secsToMs).toString();
 
-        updateTrackerTimeByID(trackerData.id, updatedTime);
-        // const newStateValue = trackerInterval + 1;
-
-        // const secsToMs = newStateValue * 1000;
-        // const updatedTime = (+trackerData.endTime + secsToMs).toString();
-
-        // updateTracker(trackerData.id, updatedTime)
-
-        // setIntervalTime((prevTotalSeconds) => {
-        //   const newStateValue = prevTotalSeconds + 1;
-
-        //   const secsToMs = newStateValue * 1000;
-        //   const updatedTime = (+trackerData.endTime + secsToMs).toString();
-
-        //   // TODO: this should be replaced with an update to store
-        //   updateTracker(trackerData.id, updatedTime)
-        //   // updateTrackerTime(trackerData.id, updatedTime);
-        //   return newStateValue;
-        // });
-      }, 3000),
+            updateTrackerTime(trackerData.id, updatedTime);
+            return newStateValue;
+          }),
+        1000,
+      ),
     );
 
     startTracker(trackerData.id);
@@ -78,7 +54,7 @@ export default function TrackersTableActions({
     if (trackerInterval && !unmounting) {
       clearInterval(trackerInterval);
       setTrackerInterval(null);
-      // setIntervalTime(0);
+      setIntervalTime(0);
       pauseTracker(trackerData.id);
     }
 

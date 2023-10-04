@@ -9,13 +9,13 @@ import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
 // types
 import type { Dispatch, SetStateAction } from "react";
 import type { SubmitHandler } from "react-hook-form";
-import type { TrackerForApp } from "@/app/_types/tracker";
+import type { TrackerFromDB } from "@/app/_types/tracker";
 
 type EditTrackerDialogProps = {
   showDialog: boolean;
   setShowDialog: Dispatch<SetStateAction<boolean>>;
   trackerID: string;
-  trackerData: TrackerForApp;
+  trackerData: TrackerFromDB;
 };
 type EditTrackerDialogForm = {
   startDate: Date;
