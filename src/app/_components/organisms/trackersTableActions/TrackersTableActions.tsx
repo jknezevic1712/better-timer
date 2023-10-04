@@ -5,15 +5,15 @@ import EditTrackerDialog from "../editTrackerDialog/EditTrackerDialog";
 import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
 import useToast from "@/app/_hooks/toast/useToast";
 // types
-import type { TrackerFromDB } from "@/app/_types/tracker";
+import type { TrackerForApp } from "@/app/_types/tracker";
 
 export default function TrackersTableActions({
   trackers,
   trackerData,
   trackerTableType,
 }: {
-  trackers: TrackerFromDB[];
-  trackerData: TrackerFromDB;
+  trackers: TrackerForApp[];
+  trackerData: TrackerForApp;
   trackerTableType: "active" | "history";
 }) {
   const {
@@ -21,7 +21,7 @@ export default function TrackersTableActions({
     pauseTracker,
     stopTracker,
     deleteTracker,
-    updateTrackerTime,
+    // updateTrackerTime,
   } = useFirebaseActions();
   const toast = useToast();
   const [trackerInterval, setTrackerInterval] = useState<NodeJS.Timeout | null>(
@@ -40,7 +40,8 @@ export default function TrackersTableActions({
             const secsToMs = newStateValue * 1000;
             const updatedTime = (+trackerData.endTime + secsToMs).toString();
 
-            updateTrackerTime(trackerData.id, updatedTime);
+            // TODO: this should be replaced with an update to store
+            // updateTrackerTime(trackerData.id, updatedTime);
             return newStateValue;
           }),
         1000,

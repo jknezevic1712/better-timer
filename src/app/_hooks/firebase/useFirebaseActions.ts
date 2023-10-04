@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 // types
 import type { User } from "firebase/auth";
-import type { TrackerFromDB, TrackerToSend } from "@/app/_types/tracker";
+import type { TrackerForApp, TrackerForDB } from "@/app/_types/tracker";
 import type { Unsubscribe } from "firebase/firestore";
 // custom hooks
 import useToast from "@/app/_hooks/toast/useToast";
@@ -51,7 +51,7 @@ export default function useFirebaseActions() {
       if (currentUser) {
         const todaysDate = Date.now().toString();
 
-        const trackerData: TrackerToSend = {
+        const trackerData: TrackerForDB = {
           dateCreated: {
             ms: todaysDate,
             formatted: getFormattedDate(+todaysDate),
@@ -109,13 +109,13 @@ export default function useFirebaseActions() {
       if (currentUser) {
         const q = query(collection(db, `users/${currentUser.uid}/trackers`));
         unsubscribeFetchTrackers.current = onSnapshot(q, (querySnapshot) => {
-          const data: Record<string, TrackerToSend> = {};
+          const data: Record<string, TrackerForDB> = {};
 
           querySnapshot.forEach((doc) => {
-            data[doc.id] = doc.data() as TrackerToSend;
+            data[doc.id] = doc.data() as TrackerForDB;
           });
 
-          const structuredData: TrackerFromDB[] = Object.entries(data).map(
+          const structuredData: TrackerForApp[] = Object.entries(data).map(
             (res) => ({
               id: res[0],
               dateCreated: res[1].dateCreated,
@@ -187,7 +187,7 @@ export default function useFirebaseActions() {
 
   function editTracker(
     id: string,
-    data: Pick<TrackerFromDB, "description" | "startTime" | "endTime">,
+    data: Pick<TrackerForApp, "description" | "startTime" | "endTime">,
   ) {
     try {
       if (currentUser) {
@@ -216,13 +216,13 @@ export default function useFirebaseActions() {
     }
   }
 
-  async function syncTrackers(trackers: TrackerFromDB[]) {
+  async function syncTrackers(trackers: TrackerForApp[]) {
     try {
       if (currentUser) {
         const batch = writeBatch(db);
 
         trackers.forEach((tracker) => {
-          const formattedTracker: TrackerToSend = {
+          const formattedTracker: TrackerForDB = {
             description: tracker.description,
             startTime: tracker.startTime,
             endTime: tracker.endTime,
