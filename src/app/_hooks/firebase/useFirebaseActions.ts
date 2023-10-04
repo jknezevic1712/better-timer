@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 // types
 import type { User } from "firebase/auth";
-import type { TrackerFromDB, TrackerToSend } from "@/app/_types/tracker";
+import type { TrackerForApp, TrackerForDB } from "@/app/_types/tracker";
 import type { Unsubscribe } from "firebase/firestore";
 // custom hooks
 import useToast from "@/app/_hooks/toast/useToast";
@@ -46,12 +46,12 @@ export default function useFirebaseActions() {
     }
   }
 
-  const addNewTracker = async (description: string) => {
+  async function addNewTracker(description: string) {
     try {
       if (currentUser) {
         const todaysDate = Date.now().toString();
 
-        const trackerData: TrackerToSend = {
+        const trackerData: TrackerForDB = {
           dateCreated: {
             ms: todaysDate,
             formatted: getFormattedDate(+todaysDate),
@@ -75,9 +75,9 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error adding a new tracker, reason: ${e}`, "error");
     }
-  };
+  }
 
-  const stopAllTrackers = async () => {
+  async function stopAllTrackers() {
     try {
       if (currentUser) {
         const batch = writeBatch(db);
@@ -102,20 +102,20 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping all trackers, reason: ${e}`, "error");
     }
-  };
+  }
 
-  const fetchTrackers = (): void | Unsubscribe => {
+  function fetchTrackers(): void | Unsubscribe {
     try {
       if (currentUser) {
         const q = query(collection(db, `users/${currentUser.uid}/trackers`));
         unsubscribeFetchTrackers.current = onSnapshot(q, (querySnapshot) => {
-          const data: Record<string, TrackerToSend> = {};
+          const data: Record<string, TrackerForDB> = {};
 
           querySnapshot.forEach((doc) => {
-            data[doc.id] = doc.data() as TrackerToSend;
+            data[doc.id] = doc.data() as TrackerForDB;
           });
 
-          const structuredData: TrackerFromDB[] = Object.entries(data).map(
+          const structuredData: TrackerForApp[] = Object.entries(data).map(
             (res) => ({
               id: res[0],
               dateCreated: res[1].dateCreated,
@@ -140,9 +140,9 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error fetching trackers from DB, reason: ${e}`, "error");
     }
-  };
+  }
 
-  const startTracker = (id: string) => {
+  function startTracker(id: string) {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
@@ -154,9 +154,9 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error starting the tracker, reason: ${e}`, "error");
     }
-  };
+  }
 
-  const pauseTracker = (id: string) => {
+  function pauseTracker(id: string) {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
@@ -168,9 +168,9 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error pausing the tracker, reason: ${e}`, "error");
     }
-  };
+  }
 
-  const stopTracker = (id: string) => {
+  function stopTracker(id: string) {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
@@ -183,12 +183,12 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping the tracker, reason: ${e}`, "error");
     }
-  };
+  }
 
-  const editTracker = (
+  function editTracker(
     id: string,
-    data: Pick<TrackerFromDB, "description" | "startTime" | "endTime">,
-  ) => {
+    data: Pick<TrackerForApp, "description" | "startTime" | "endTime">,
+  ) {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
@@ -201,9 +201,9 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping the tracker, reason: ${e}`, "error");
     }
-  };
+  }
 
-  const deleteTracker = async (id: string) => {
+  async function deleteTracker(id: string) {
     try {
       if (currentUser) {
         await deleteDoc(doc(db, `users/${currentUser.uid}/trackers`, id));
@@ -214,9 +214,44 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping the tracker, reason: ${e}`, "error");
     }
-  };
+  }
 
-  const updateTrackerTime = (id: string, endTime: string) => {
+  async function syncTrackers(trackers: TrackerForApp[]) {
+    try {
+      if (currentUser) {
+        const batch = writeBatch(db);
+
+        trackers.forEach((tracker) => {
+          const formattedTracker: TrackerForDB = {
+            description: tracker.description,
+            startTime: tracker.startTime,
+            endTime: tracker.endTime,
+            dateCreated: tracker.dateCreated,
+            active: tracker.active,
+            running: tracker.running,
+          };
+
+          const trackerRef = doc(
+            db,
+            `users/${currentUser.uid}/trackers`,
+            tracker.id,
+          );
+          batch.update(trackerRef, { ...formattedTracker });
+        });
+
+        await batch.commit();
+
+        toast("Successfully synced trackers!", "success");
+        return;
+      }
+
+      throw "current user doesn't exist!";
+    } catch (e) {
+      toast(`Error syncing trackers, reason: ${e}`, "error");
+    }
+  }
+
+  function updateTrackerTime(id: string, endTime: string) {
     try {
       if (currentUser) {
         const trackerRef = doc(db, `users/${currentUser.uid}/trackers`, id);
@@ -229,7 +264,7 @@ export default function useFirebaseActions() {
     } catch (e) {
       toast(`Error stopping the tracker, reason: ${e}`, "error");
     }
-  };
+  }
 
   return {
     addUserToDB,
@@ -242,6 +277,7 @@ export default function useFirebaseActions() {
     stopTracker,
     editTracker,
     deleteTracker,
+    syncTrackers,
     updateTrackerTime,
   };
 }

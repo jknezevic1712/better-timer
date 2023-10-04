@@ -8,7 +8,7 @@ import HistoryTemplate, {
 // custom hooks
 import useStore from "@/app/_store/store";
 // types
-import type { TrackerFromDB } from "@/app/_types/tracker";
+import type { TrackerForApp } from "@/app/_types/tracker";
 import type { FilterData } from "@/app/_components/templates/historyTemplate/HistoryTemplate";
 // helpers
 import { filterTrackers } from "@/app/_helpers/helpers";
@@ -16,10 +16,10 @@ import withDataFetchingSubscription from "@/app/_helpers/WithDataFetchingSubscri
 
 function History() {
   const storeTrackers = useStore((state) => state.trackers);
-  const [trackers, setTrackers] = useState<TrackerFromDB[]>([]);
+  const [trackers, setTrackers] = useState<TrackerForApp[]>([]);
   const [filterData, setFilterData] = useState<FilterData>(filterInitialData);
 
-  function applySearchFilters(trackers: TrackerFromDB[]) {
+  function applySearchFilters(trackers: TrackerForApp[]) {
     return trackers.filter(
       (tracker) =>
         tracker.description.trim().includes(filterData.description) &&

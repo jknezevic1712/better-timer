@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 // custom hooks
 import useStore from "@/app/_store/store";
+import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
 
 export default function SyncTrackersLayout({
   children,
@@ -10,6 +11,7 @@ export default function SyncTrackersLayout({
   children: React.ReactNode;
 }) {
   const storeTrackers = useStore((state) => state.trackers);
+  const { syncTrackers } = useFirebaseActions();
   const [syncTrackerInterval, setSyncTrackerInterval] =
     useState<NodeJS.Timeout | null>(null);
 
@@ -17,7 +19,7 @@ export default function SyncTrackersLayout({
     setSyncTrackerInterval(
       setInterval(
         () => {
-          // syncTrackers(storeTrackers)
+          syncTrackers(storeTrackers);
         },
         5000, // TODO: set to 60000 (minute)
       ),
