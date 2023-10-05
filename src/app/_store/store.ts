@@ -26,9 +26,12 @@ export const useStore = create(
   persist<State & Actions>(
     (set, get) => ({
       ...initialState,
+
       setUser: (newUser) => set((state) => ({ ...state, user: newUser })),
+
       setTrackers: (newTrackers) =>
         set((state) => ({ ...state, trackers: newTrackers })),
+
       updateTracker: (trackerArrID, trackerData) =>
         set((state) => ({
           ...state,
@@ -37,23 +40,29 @@ export const useStore = create(
             (state.trackers[trackerArrID] = { ...trackerData }),
           ],
         })),
+
       updateTrackerTimeByID: (trackerID, newTrackerTime) => {
         const storeTrackers = get().trackers;
-        const updatedTracker = storeTrackers.find((val, id, trackerArr) => {
-          if (val.id === trackerID) {
-            return (trackerArr[id] = { ...val, endTime: newTrackerTime });
-            // return trackerArr;
-          }
-        });
+        // const updatedTracker = storeTrackers.filter((val, id, trackerArr) => {
+        //   if (val.id === trackerID) {
+        //     return (trackerArr[id] = { ...val, endTime: newTrackerTime });
+        //     // return trackerArr;
+        //   }
+        // });
+        const updatedTracker = storeTrackers.find(
+          (val) => val.id === trackerID,
+        )!;
+        updatedTracker.endTime = newTrackerTime;
 
         console.log("UPDATED TRACKER ", updatedTracker);
-        console.log("NEW TRACKERS ", [...storeTrackers, updatedTracker!][6]);
+        console.log("NEW TRACKERS ", [...storeTrackers, { ...updatedTracker }]);
 
         return set((state) => ({
           ...state,
-          trackers: [...state.trackers, updatedTracker!],
+          trackers: [...state.trackers, { ...updatedTracker }],
         }));
       },
+
       resetState: () => set(initialState),
     }),
     {

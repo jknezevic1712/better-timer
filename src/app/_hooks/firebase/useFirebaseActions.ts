@@ -28,7 +28,7 @@ import type { MutableRefObject } from "react";
 export default function useFirebaseActions() {
   const toast = useToast();
   const currentUser = useStore((state) => state.user);
-  const trackers = useStore((state) => state.trackers);
+  const storeTrackers = useStore((state) => state.trackers);
   const setTrackers = useStore((state) => state.setTrackers);
   const unsubscribeFetchTrackers: MutableRefObject<Unsubscribe | undefined> =
     useRef();
@@ -81,7 +81,7 @@ export default function useFirebaseActions() {
     try {
       if (currentUser) {
         const batch = writeBatch(db);
-        const activeTrackers = filterTrackers(trackers, "active");
+        const activeTrackers = filterTrackers(storeTrackers, "active");
 
         activeTrackers.forEach((tracker) => {
           const trackerRef = doc(
@@ -216,12 +216,12 @@ export default function useFirebaseActions() {
     }
   }
 
-  async function syncTrackers(trackers: TrackerForApp[]) {
+  async function syncTrackers() {
     try {
       if (currentUser) {
         const batch = writeBatch(db);
 
-        trackers.forEach((tracker) => {
+        storeTrackers.forEach((tracker) => {
           const formattedTracker: TrackerForDB = {
             description: tracker.description,
             startTime: tracker.startTime,
@@ -236,6 +236,7 @@ export default function useFirebaseActions() {
             `users/${currentUser.uid}/trackers`,
             tracker.id,
           );
+
           batch.update(trackerRef, { ...formattedTracker });
         });
 

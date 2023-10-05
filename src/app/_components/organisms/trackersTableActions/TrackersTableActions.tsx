@@ -32,7 +32,9 @@ export default function TrackersTableActions({
   const [_, setIntervalTime] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
 
-  console.log("REEEEEEEEEEEEEEENDER ", trackerData);
+  if (trackerData.description.includes("6")) {
+    console.log("REEEEEEEEEEEEEEENDER ", trackerData);
+  }
 
   function startTimer() {
     setTrackerInterval(
