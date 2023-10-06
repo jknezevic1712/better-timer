@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 // components
 import HeaderNav from "../../molecules/headerNav/HeaderNav";
 // custom hooks
-import useStore from "@/app/_store/store";
+import useStore from "@/app/_hooks/store/store";
 // types
 import type { User } from "firebase/auth";
 

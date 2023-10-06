@@ -16,7 +16,7 @@ import type { TrackerForApp, TrackerForDB } from "@/app/_types/tracker";
 import type { Unsubscribe } from "firebase/firestore";
 // custom hooks
 import useToast from "@/app/_hooks/toast/useToast";
-import useStore from "@/app/_store/store";
+import useStore from "@/app/_hooks/store/store";
 // helpers
 import {
   filterTrackers,
