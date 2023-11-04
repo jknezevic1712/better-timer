@@ -30,8 +30,9 @@ export default function useFirebaseActions() {
   const currentUser = useStore((state) => state.user);
   const storeTrackers = useStore((state) => state.trackers);
   const setTrackers = useStore((state) => state.setTrackers);
-  const unsubscribeFetchTrackers: MutableRefObject<Unsubscribe | undefined> =
-    useRef();
+  const unsubscribeFromFetchTrackers: MutableRefObject<
+    Unsubscribe | undefined
+  > = useRef();
 
   async function addUserToDB(userData: User) {
     const newUserData = {
@@ -104,39 +105,38 @@ export default function useFirebaseActions() {
     }
   }
 
-  function fetchTrackers(): void | Unsubscribe {
+  function fetchTrackersSubscription(): void | Unsubscribe {
     try {
       if (currentUser) {
         const q = query(collection(db, `users/${currentUser.uid}/trackers`));
-        unsubscribeFetchTrackers.current = onSnapshot(q, (querySnapshot) => {
-          const data: Record<string, TrackerForDB> = {};
+        unsubscribeFromFetchTrackers.current = onSnapshot(
+          q,
+          (querySnapshot) => {
+            const data: Record<string, TrackerForDB> = {};
 
-          querySnapshot.forEach((doc) => {
-            data[doc.id] = doc.data() as TrackerForDB;
-          });
+            querySnapshot.forEach((doc) => {
+              data[doc.id] = doc.data() as TrackerForDB;
+            });
 
-          const structuredData: TrackerForApp[] = Object.entries(data).map(
-            (res) => ({
-              id: res[0],
-              dateCreated: res[1].dateCreated,
-              description: res[1].description,
-              startTime: res[1].startTime,
-              endTime: res[1].endTime,
-              loggedTime: formatDateToTimestamp(
-                +res[1].endTime - +res[1].startTime,
-              ),
-              running: res[1].running,
-              active: res[1].active,
-            }),
-          );
+            const structuredData: TrackerForApp[] = Object.entries(data).map(
+              (res) => ({
+                id: res[0],
+                dateCreated: res[1].dateCreated,
+                description: res[1].description,
+                startTime: res[1].startTime,
+                endTime: res[1].endTime,
+                loggedTime: formatDateToTimestamp(
+                  +res[1].endTime - +res[1].startTime,
+                ),
+                running: res[1].running,
+                active: res[1].active,
+              }),
+            );
 
-          setTrackers(structuredData);
-
-          return;
-        });
+            setTrackers(structuredData);
+          },
+        );
       }
-
-      return;
     } catch (e) {
       toast(`Error fetching trackers from DB, reason: ${e}`, "error");
     }
@@ -271,8 +271,8 @@ export default function useFirebaseActions() {
     addUserToDB,
     addNewTracker,
     stopAllTrackers,
-    fetchTrackers,
-    unsubscribeFetchTrackers,
+    fetchTrackersSubscription,
+    unsubscribeFromFetchTrackers,
     startTracker,
     pauseTracker,
     stopTracker,

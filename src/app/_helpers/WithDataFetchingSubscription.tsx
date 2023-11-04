@@ -6,12 +6,13 @@ export default function withDataFetchingSubscription(
   Component: (props: any) => React.ReactNode,
 ) {
   return function DataFetchingComponent(props: any) {
-    const { unsubscribeFetchTrackers, fetchTrackers } = useFirebaseActions();
+    const { unsubscribeFromFetchTrackers, fetchTrackersSubscription } =
+      useFirebaseActions();
 
     useEffect(() => {
-      fetchTrackers();
+      fetchTrackersSubscription();
 
-      const unsubscribe = unsubscribeFetchTrackers.current;
+      const unsubscribe = unsubscribeFromFetchTrackers.current;
       return () => {
         unsubscribe && unsubscribe();
       };
