@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useStore from "@/app/_store/store";
+import useStore from "@/app/_hooks/store/store";
 // components
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 // types
 import type { User } from "firebase/auth";
-import type { TrackerForApp } from "../_types/tracker";
+import type { TrackerForApp } from "../../_types/tracker";
 
 interface State {
   user: User | null;

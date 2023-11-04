@@ -4,9 +4,9 @@ import EditTrackerDialog from "../editTrackerDialog/EditTrackerDialog";
 // custom hooks
 import useFirebaseActions from "@/app/_hooks/firebase/useFirebaseActions";
 import useToast from "@/app/_hooks/toast/useToast";
+import useStore from "@/app/_hooks/store/store";
 // types
 import type { TrackerForApp } from "@/app/_types/tracker";
-import useStore from "@/app/_store/store";
 
 export default function TrackersTableActions({
   trackers,

@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth } from "@/server/api/firebase/firebase-config";
 // hooks
-import useStore from "@/app/_store/store";
+import useStore from "@/app/_hooks/store/store";
 import useToast from "@/app/_hooks/toast/useToast";
 import useFirebaseActions from "./useFirebaseActions";
 // types

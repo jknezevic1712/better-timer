@@ -6,7 +6,7 @@ import HistoryTemplate, {
   filterInitialData,
 } from "@/app/_components/templates/historyTemplate/HistoryTemplate";
 // custom hooks
-import useStore from "@/app/_store/store";
+import useStore from "@/app/_hooks/store/store";
 // types
 import type { TrackerForApp } from "@/app/_types/tracker";
 import type { FilterData } from "@/app/_components/templates/historyTemplate/HistoryTemplate";
